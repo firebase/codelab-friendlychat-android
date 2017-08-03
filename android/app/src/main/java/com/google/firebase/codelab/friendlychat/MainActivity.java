@@ -399,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements
                 mUsername = ANONYMOUS;
                 mPhotoUrl = null;
                 startActivity(new Intent(this, SignInActivity.class));
+                finish();
                 return true;
             case R.id.fresh_config_menu:
                 fetchConfig();
