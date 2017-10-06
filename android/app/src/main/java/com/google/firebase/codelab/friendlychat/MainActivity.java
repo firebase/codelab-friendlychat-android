@@ -29,10 +29,12 @@ import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,6 +43,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.firebase.ui.database.SnapshotParser;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
@@ -158,24 +162,38 @@ public class MainActivity extends AppCompatActivity implements
         mLinearLayoutManager.setStackFromEnd(true);
 
         mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>(
-                FriendlyMessage.class,
-                R.layout.item_message,
-                MessageViewHolder.class,
-                mFirebaseDatabaseReference.child(MESSAGES_CHILD)) {
 
+        SnapshotParser<FriendlyMessage> parser = new SnapshotParser<FriendlyMessage>() {
             @Override
-            protected FriendlyMessage parseSnapshot(DataSnapshot snapshot) {
-                FriendlyMessage friendlyMessage = super.parseSnapshot(snapshot);
+            public FriendlyMessage parseSnapshot(DataSnapshot dataSnapshot) {
+                FriendlyMessage friendlyMessage = dataSnapshot.getValue(FriendlyMessage.class);
                 if (friendlyMessage != null) {
-                    friendlyMessage.setId(snapshot.getKey());
+                    friendlyMessage.setId(dataSnapshot.getKey());
                 }
                 return friendlyMessage;
             }
+        };
+
+        DatabaseReference messagesRef = mFirebaseDatabaseReference.child(MESSAGES_CHILD);
+
+        FirebaseRecyclerOptions<FriendlyMessage> options =
+                new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
+                        .setQuery(messagesRef, parser)
+                        .build();
+
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>(options) {
 
             @Override
-            protected void populateViewHolder(final MessageViewHolder viewHolder,
-                                              FriendlyMessage friendlyMessage, int position) {
+            public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
+            }
+
+            @Override
+            protected void onBindViewHolder(final MessageViewHolder viewHolder,
+                                            int position,
+                                            FriendlyMessage friendlyMessage) {
+
                 mProgressBar.setVisibility(ProgressBar.INVISIBLE);
                 if (friendlyMessage.getText() != null) {
                     viewHolder.messageTextView.setText(friendlyMessage.getText());
