@@ -374,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mAdView != null) {
             mAdView.pause();
         }
+        mFirebaseAdapter.stopListening();
         super.onPause();
     }
 
@@ -383,6 +384,7 @@ public class MainActivity extends AppCompatActivity implements
         if (mAdView != null) {
             mAdView.resume();
         }
+        mFirebaseAdapter.startListening();
     }
 
     @Override
