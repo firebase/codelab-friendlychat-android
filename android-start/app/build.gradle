@@ -52,10 +52,7 @@ dependencies {
     compile 'com.firebaseui:firebase-ui-database:3.0.0'
 
     //Crashlytics
-    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-        transitive = true
-    }
-    compile 'com.google.firebase:firebase-core:11.4.2'
+    compile 'com.crashlytics.sdk.android:crashlytics:2.7.1'
 
     // Testing dependencies
     androidTestCompile 'junit:junit:4.12'
