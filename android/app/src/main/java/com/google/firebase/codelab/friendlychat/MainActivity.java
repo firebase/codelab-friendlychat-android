@@ -64,7 +64,6 @@ import com.google.firebase.appindexing.builders.Indexables;
 import com.google.firebase.appindexing.builders.PersonBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -409,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements
                 sendInvitation();
                 return true;
             case R.id.crash_menu:
-                FirebaseCrash.logcat(Log.ERROR, TAG, "crash caused");
+                Log.w("Crashlytics", "Crash button clicked");
                 causeCrash();
                 return true;
             case R.id.sign_out_menu:
