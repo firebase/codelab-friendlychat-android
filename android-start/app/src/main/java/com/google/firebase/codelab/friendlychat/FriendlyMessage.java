@@ -20,16 +20,16 @@ public class FriendlyMessage {
     private String id;
     private String text;
     private String name;
-    private String photoUrl;
+    private String profilePicUrl;
     private String imageUrl;
 
     public FriendlyMessage() {
     }
 
-    public FriendlyMessage(String text, String name, String photoUrl, String imageUrl) {
+    public FriendlyMessage(String text, String name, String profilePicUrl, String imageUrl) {
         this.text = text;
         this.name = name;
-        this.photoUrl = photoUrl;
+        this.profilePicUrl = profilePicUrl;
         this.imageUrl = imageUrl;
     }
 
@@ -53,16 +53,16 @@ public class FriendlyMessage {
         this.name = name;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getProfilePicUrl() {
+        return profilePicUrl;
     }
 
     public String getText() {
         return text;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
+    public void setProfilePicUrl(String profilePicUrl) {
+        this.profilePicUrl = profilePicUrl;
     }
 
     public String getImageUrl() {
