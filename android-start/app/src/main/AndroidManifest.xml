@@ -19,6 +19,10 @@
 
         <activity android:name=".SignInActivity" />
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4072499761055074~4306996274"/>
+
     </application>
 
 </manifest>
