@@ -47,8 +47,6 @@ import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.database.SnapshotParser;
-import com.google.android.gms.appinvite.AppInvite;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -400,12 +398,18 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                         if (task.isSuccessful()) {
-                            FriendlyMessage friendlyMessage =
-                                    new FriendlyMessage(null, mUsername, mPhotoUrl,
-                                            task.getResult().getMetadata().getPath());
-                            mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key)
-                                    .setValue(friendlyMessage);
-                            logMessageSent();
+                            task.getResult().getMetadata().getReference().getDownloadUrl()
+                                    .addOnCompleteListener(MainActivity.this, new OnCompleteListener<Uri>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Uri> task) {
+                                    FriendlyMessage friendlyMessage =
+                                            new FriendlyMessage(null, mUsername, mPhotoUrl,
+                                                    task.getResult().toString());
+                                    mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key)
+                                            .setValue(friendlyMessage);
+                                    logMessageSent();
+                                }
+                            });
                         } else {
                             Log.w(TAG, "Image upload task was not successful.",
                                     task.getException());
