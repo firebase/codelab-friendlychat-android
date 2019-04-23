@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+android {
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        applicationId "com.google.firebase.codelab.friendlychat"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE-FIREBASE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+dependencies {
+    configurations.all {
+        resolutionStrategy.force 'com.android.support:design:27.1.1'
+    }
+
+    testImplementation 'junit:junit:4.12'
+
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.7.1'
+    implementation 'de.hdodenhof:circleimageview:1.3.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    // Google
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:17.0.0')
+
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Firebase UI
+    implementation 'com.firebaseui:firebase-ui-database:3.3.1'
+
+    // Testing dependencies
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+}
+
+apply plugin: 'com.google.gms.google-services'
