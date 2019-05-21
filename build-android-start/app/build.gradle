@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.google.firebase.codelab.friendlychat"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -46,7 +46,7 @@ dependencies {
 
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
-    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-auth'got
 
     // Firebase UI
     implementation 'com.firebaseui:firebase-ui-database:3.3.1'
