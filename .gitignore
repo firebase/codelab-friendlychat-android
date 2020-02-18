@@ -7,3 +7,4 @@ xcuserdata/
 *.xcworkspace/
 GoogleService-Info.plist
 .gradle
+build
