@@ -1,0 +1,3 @@
+include ':build-android:app',
+        ':build-android-start:app',
+        ':grow-android-start:app'
