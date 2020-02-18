@@ -8,3 +8,6 @@ xcuserdata/
 GoogleService-Info.plist
 .gradle
 build
+*.iml
+.idea
+local.properties

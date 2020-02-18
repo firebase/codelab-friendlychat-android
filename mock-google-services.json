@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1234567890158",
+    "firebase_url": "https://fir-mock-project.firebaseio.com",
+    "project_id": "fir-mock-project",
+    "storage_bucket": "fir-mock-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1234567890158:android:399077dc333751e6a5f937",
+        "android_client_info": {
+          "package_name": "com.google.firebase.codelab.friendlychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1234567890158-gv99p92abcdef88ucgfobd02abcdef7m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9kwAAxbxcrkibrLOuAA8YnAWqgur0AeA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1234567890158-gv99p92abcdef88ucgfobd02abcdef7m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
