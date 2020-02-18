@@ -6,3 +6,8 @@ Podfile.lock
 xcuserdata/
 *.xcworkspace/
 GoogleService-Info.plist
+.gradle
+build
+*.iml
+.idea
+local.properties
