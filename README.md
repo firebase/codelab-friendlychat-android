@@ -15,5 +15,5 @@ Please read and follow the steps in the [CONTRIBUTING.md](CONTRIBUTING.md)
 ## License
 See [LICENSE](LICENSE)
 
-[gh-actions]: https://github.com/firebase/friendlychat-android/actions
-[gh-actions-badge]: https://github.com/firebase/friendlychat-android/workflows/Android%20CI/badge.svg
+[gh-actions]: https://github.com/firebase/codelab-friendlychat-android/actions
+[gh-actions-badge]: https://github.com/firebase/codelab-friendlychat-android/workflows/Android%20CI/badge.svg
