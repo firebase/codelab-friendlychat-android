@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.1.0')
+    implementation platform('com.google.firebase:firebase-bom:25.1.1')
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database'
