@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
 
     // Testing dependencies
     androidTestImplementation 'junit:junit:4.13'

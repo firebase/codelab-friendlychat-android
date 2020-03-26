@@ -51,7 +51,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
     implementation 'androidx.arch.core:core-common:2.1.0'
 
