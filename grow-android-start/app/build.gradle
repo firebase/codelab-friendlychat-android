@@ -34,10 +34,10 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
     // Google
-    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.1.1')
+    implementation platform('com.google.firebase:firebase-bom:25.2.1')
     implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-database'
