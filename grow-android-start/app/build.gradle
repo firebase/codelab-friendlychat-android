@@ -1,9 +1,8 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId "com.google.firebase.codelab.friendlychat"
@@ -27,9 +26,6 @@ android {
 }
 
 dependencies {
-
-    testImplementation 'junit:junit:4.13'
-
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
@@ -38,17 +34,15 @@ dependencies {
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:25.3.1')
-    implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-auth'
-    implementation 'com.google.firebase:firebase-config'
-    implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-inappmessaging-display'
     implementation 'com.google.firebase:firebase-analytics'
-    //Crashlytics
-    implementation 'com.crashlytics.sdk.android:crashlytics'
+    implementation 'com.google.firebase:firebase-config'
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-inappmessaging-display'
+    implementation 'com.google.firebase:firebase-messaging'
+    implementation 'com.google.firebase:firebase-storage'
 
     // Firebase UI
     implementation 'com.firebaseui:firebase-ui-database:6.2.1'
@@ -56,6 +50,7 @@ dependencies {
     implementation 'androidx.arch.core:core-common:2.1.0'
 
     // Testing dependencies
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
