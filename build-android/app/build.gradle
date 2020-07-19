@@ -35,10 +35,10 @@ dependencies {
     implementation 'androidx.media:media:1.1.0'
 
     // Google
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.6.0')
+    implementation platform('com.google.firebase:firebase-bom:25.6.1')
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-auth'
