@@ -33,7 +33,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:18.1.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.6.1')
+    implementation platform('com.google.firebase:firebase-bom:25.7.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-analytics'
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:6.2.1'
+    implementation 'com.firebaseui:firebase-ui-database:6.3.0'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
     implementation 'androidx.arch.core:core-common:2.1.0'
 
