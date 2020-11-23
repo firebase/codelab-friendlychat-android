@@ -38,13 +38,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.0.0')
+    implementation platform('com.google.firebase:firebase-bom:26.1.0')
     implementation 'com.google.firebase:firebase-database'
     implementation 'com.google.firebase:firebase-storage'
     implementation 'com.google.firebase:firebase-auth'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:6.4.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.1.0'
 
     // Testing dependencies
     testImplementation 'junit:junit:4.13.1'
