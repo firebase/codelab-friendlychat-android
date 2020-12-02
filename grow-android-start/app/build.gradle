@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:7.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
     implementation 'androidx.arch.core:core-runtime:2.1.0'
     implementation 'androidx.arch.core:core-common:2.1.0'
 
