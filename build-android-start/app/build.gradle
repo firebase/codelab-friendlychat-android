@@ -32,7 +32,7 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.media:media:1.2.1'
 
     // Google
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
@@ -44,7 +44,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-database:7.1.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
 
     // Testing dependencies
     testImplementation 'junit:junit:4.13.1'
