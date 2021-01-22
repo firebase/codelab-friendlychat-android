@@ -13,9 +13,8 @@ jobs:
       # Add any build steps here. For example:
       - run: |
           go get github.com/googlecodelabs/tools/claat
-          which go
-          ls $HOME/go/bin
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          ls
+          cd steps
           $HOME/go/bin/claat export index.lab.md
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
