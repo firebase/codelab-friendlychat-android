@@ -1,0 +1,610 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Firebase Android Codelab - Build Friendly Chat</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="firebase-android"
+                  title="Firebase Android Codelab - Build Friendly Chat"
+                  environment="web"
+                  feedback-link="https://github.com/firebase/codelab-friendlychat-android/issues">
+    
+      <google-codelab-step label="Overview" duration="5">
+        <p class="image-container"><img alt="screenshot" style="width: 173.00px" src="img/4a42050f9a677dbb.png"></p>
+<p>Image: Working Friendly Chat app.</p>
+<p>Welcome to the Friendly Chat codelab. In this codelab, you&#39;ll learn how to use the Firebase platform to create a chat app on Android.</p>
+<h3 is-upgraded>What you learn <strong>to do</strong></h3>
+<ul>
+<li>Allow users to sign in.</li>
+<li>Sync data using the Firebase Realtime Database.</li>
+<li>Store binary files in Firebase</li>
+</ul>
+<h3 is-upgraded>What you need</h3>
+<ul>
+<li><a href="https://developer.android.com/studio" target="_blank">Android Studio</a> version 3.4+.</li>
+<li>Sample code.</li>
+<li>A test device with Android 2.3+ and Google Play services 9.8 or later, or an  <a href="https://developer.android.com/studio/run/emulator#install" target="_blank">Emulator</a> with Google Play services 9.8 or later</li>
+<li>If using a device, a connection cable.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Get the sample code" duration="5">
+        <p>Clone the GitHub repository from the command line:</p>
+<pre>$ git clone https://github.com/firebase/codelab-friendlychat-android
+</pre>
+<aside class="special"><p>The &#34;friendlychat-android&#34; repository contains two directories:</p>
+<ul>
+<li><img alt="android_studio_folder" style="width: 20.00px" src="img/a1beacb239657647.png"><strong>build-android-start</strong>—Starting code that you build upon in this codelab.</li>
+<li><img alt="android_studio_folder" style="width: 20.00px" src="img/a1beacb239657647.png"><strong>build-android</strong>—Completed code for the finished sample app.</li>
+</ul>
+<p><strong>Note</strong>: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  <a href="https://codelabs.developers.google.com/codelabs/firebase-android/#3" target="_blank">Create Firebase Console Project</a> for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Import the starter app" duration="3">
+        <p>From Android Studio, select the <code>build-android-start</code> directory ( <img alt="android_studio_folder" style="width: 20.00px" src="img/a1beacb239657647.png">)   from the sample code download (<strong>File</strong> &gt; <strong>Open</strong> &gt; .../codelab-friendlychat-android/build-android-start).</p>
+<p>You should now have the android-start project open in Android Studio. If you see a warning about a google-services.json file missing, don&#39;t worry. It will be added in the next step.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Create Firebase console project" duration="3">
+        <h2 is-upgraded><strong>Add Firebase to the project</strong></h2>
+<ol type="1">
+<li>Go to the  <a href="https://console.firebase.google.com" target="_blank">Firebase console</a>.</li>
+<li>Select <strong>Add project</strong>.</li>
+<li>Select or enter a Project name.</li>
+<li>Follow the remaining setup steps in the Firebase console, then click Create project (or Add Firebase, if you&#39;re using an existing Google project).</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Add Firebase" duration="1">
+        <ol type="1">
+<li>From the overview screen of your new project, click the Android icon to launch the setup workflow.</li>
+<li>Enter the codelab&#39;s package name: <code>com.google.firebase.codelab.friendlychat</code></li>
+<li>Enter the SHA1 of your signing keystore. If you are using the standard debug keystore, use the command below to find the SHA1 hash:</li>
+</ol>
+<pre>keytool -alias androiddebugkey -keystore ~/.android/debug.keystore -list -v -storepass android
+</pre>
+<aside class="special"><p><strong>Note</strong>: Your debug keystore, usually called &#34;debug.keystore&#34;, is typically located at</p>
+<p>$HOME/.android/debug.keystore.  If this file does not exist, Android Studio will create it for you the first time you run any app.</p>
+<p>See  <a href="https://developers.google.com/android/guides/client-auth" target="_blank">here</a> for more detail on finding SHA1.</p>
+</aside>
+<h3 is-upgraded><strong>Add google-services.json file to your app</strong></h3>
+<p>After adding the package name and SHA1 and selecting Register<strong>, Click Download google-services.json</strong> to obtain your Firebase Android config file then copy the google-services.json file into the <em><code>app</code></em> directory in your project. After the file is downloaded you can <strong>Skip</strong> the next steps shown in the console (they&#39;ve already been done for you in the build-android-start project).</p>
+<h3 is-upgraded><strong>Add google-services plugin to your app</strong></h3>
+<p>The google-services plugin uses the google-services.json file to configure your application to use Firebase. The following line should already be added to the end of the build.gradle file in the <em><code>app</code></em> directory of your project (check to confirm):</p>
+<pre><code>apply plugin: &#39;com.google.gms.google-services&#39;
+</code></pre>
+<h3 is-upgraded><strong>Sync your project with gradle files</strong></h3>
+<p>To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select <strong>File &gt; Sync Project with Gradle Files</strong> from the Android Studio toolbar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Run the starter app" duration="3">
+        <p>Now that you have imported the project into Android Studio and configured the <code>google-services</code> plugin with your JSON file, you are ready to run the app for the first time.  Connect your Android device, and click <strong>Run</strong> ( <img alt="execute" style="width: 20.00px" src="img/c8b8a080b7ead886.png">)in the Android Studio toolbar.</p>
+<p>The app should launch on your device. At this point, you should see an empty message list, and sending and receiving messages will not work. In the next section, you authenticate users so they can use Friendly Chat.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Enable Authentication" duration="5">
+        <p>Let&#39;s require a user to sign in before reading or posting any Friendly Chat messages.</p>
+<h3 is-upgraded><strong>Firebase Realtime Database Rules</strong></h3>
+<p>Access to your Firebase Database is configured by a set of rules written in a JSON configuration language.</p>
+<p>Go to your project in the Firebase console and select <strong>Database</strong>. Select the <strong>Realtime Database</strong> option (not Cloud Firestore). If prompted for security rules, with choices to start in either <strong>test mode</strong> or <strong>locked mode</strong>, choose <strong>locked mode</strong>. Once the default rules are established, select the <strong>Rules</strong> tab and update the rules configuration with the following:</p>
+<pre><code>{
+  &#34;rules&#34;: {
+    &#34;.read&#34;: &#34;auth != null&#34;,
+    &#34;.write&#34;: &#34;auth != null&#34;
+  }
+}
+</code></pre>
+<p>Click &#34;Publish&#34; to publish the new rules.</p>
+<p>For more information on how this works (including documentation on the &#34;auth&#34; variable) see the Firebase  <a href="https://firebase.google.com/docs/database/security/quickstart" target="_blank">security documentation</a>.</p>
+<h3 is-upgraded><strong>Configure Authentication APIs</strong></h3>
+<p>Before your application can access the Firebase Authentication APIs on behalf of your users, you will have to enable it</p>
+<ol type="1">
+<li>Navigate to the  <a href="http://console.firebase.google.com" target="_blank">Firebase console</a> and select your project</li>
+<li>Select <strong>Authentication</strong></li>
+<li>Select the <strong>Sign In Method</strong> tab</li>
+<li>Toggle the <strong>Google</strong> switch to enabled (blue)</li>
+<li>Set a support email.</li>
+<li>Press <strong>Save</strong> on the resulting dialog</li>
+</ol>
+<p>If you get errors later in this codelab with the message &#34;CONFIGURATION_NOT_FOUND&#34;, come back to this step and double check your work.</p>
+<h3 is-upgraded><strong>Add Firebase Auth dependency</strong></h3>
+<p>The firebase-auth SDK allows easy management of authenticated users of your application. Confirm the existence of this dependency in your <code>app/build.gradle</code> file.</p>
+<h3 is-upgraded>app/build.gradle</h3>
+<pre><code>implementation &#39;com.google.firebase:firebase-auth&#39;
+</code></pre>
+<p>Add the Auth instance variables in the <code>MainActivity</code> class under the <code>// Firebase instance variables</code> comment:</p>
+<h3 is-upgraded>MainActivity.java (instance variable)</h3>
+<pre><code>// Firebase instance variables
+private FirebaseAuth mFirebaseAuth;
+private FirebaseUser mFirebaseUser;
+</code></pre>
+<h3 is-upgraded><strong>Check for current user</strong></h3>
+<p>Now let&#39;s modify <code>MainActivity.java</code> to send the user to the sign-in screen whenever they open the app and are unauthenticated.</p>
+<p>Add the following to the <code>onCreate</code> method <strong>after </strong><code>mUsername</code> has been initialized:</p>
+<p><strong>MainActivity.java</strong></p>
+<pre><code>// Initialize Firebase Auth
+mFirebaseAuth = FirebaseAuth.getInstance();
+mFirebaseUser = mFirebaseAuth.getCurrentUser();
+if (mFirebaseUser == null) {
+    // Not signed in, launch the Sign In activity
+    startActivity(new Intent(this, SignInActivity.class));
+    finish();
+    return;
+} else {
+    mUsername = mFirebaseUser.getDisplayName();
+    if (mFirebaseUser.getPhotoUrl() != null) {
+        mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
+    }
+}
+</code></pre>
+<p>Then add a new case to <code>onOptionsItemSelected()</code> to handle the sign out button:</p>
+<p><strong>MainActivity.java</strong></p>
+<pre><code>    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sign_out_menu:
+                mFirebaseAuth.signOut();
+                mSignInClient.signOut();
+
+                mUsername = ANONYMOUS;
+                startActivity(new Intent(this, SignInActivity.class));
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+</code></pre>
+<p>Now we have all of the logic in place to send the user to the sign-in screen when necessary. Next we need to implement the sign-in screen to properly authenticate users.</p>
+<h3 is-upgraded><strong>Implement the Sign-In screen</strong></h3>
+<p>Open the file <code>SignInActivity.java</code>.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to Sign-In with Google, and then use that Google account to authenticate with Firebase.</p>
+<p>Add an Auth instance variable in the <code>SignInActivity</code> class under the <code>// Firebase instance variables</code> comment:</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>// Firebase instance variables
+private FirebaseAuth mFirebaseAuth;
+</code></pre>
+<p>Then, edit the <code>onCreate()</code> method to initialize Firebase in the same way you did in <code>MainActivity</code>:</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>// Initialize FirebaseAuth
+mFirebaseAuth = FirebaseAuth.getInstance();
+</code></pre>
+<p>Next, initiate signing in with Google. Update <code>SignInActivity</code>&#39;s <code>onClick</code> method to look like this:</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>@Override
+public void onClick(View v) {
+   switch (v.getId()) {
+       case R.id.sign_in_button:
+           signIn();
+           break;
+   }
+}
+</code></pre>
+<p>Add the required signIn method that actually presents the user with the Google Sign-In UI.</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>private void signIn() {
+    Intent signInIntent = mSignInClient.getSignInIntent();
+    startActivityForResult(signInIntent, RC_SIGN_IN);
+}
+</code></pre>
+<p>Next, add the <code>onActivityResult</code> method to <code>SignInActivity</code> to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase.</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    // Result returned from launching the Intent in signIn()
+    if (requestCode == RC_SIGN_IN) {
+        Task&lt;GoogleSignInAccount&gt; task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            // Google Sign In was successful, authenticate with Firebase
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            firebaseAuthWithGoogle(account);
+        } catch (ApiException e) {
+            // Google Sign In failed, update UI appropriately
+            Log.w(TAG, &#34;Google sign in failed&#34;, e);
+        }
+    }
+}
+</code></pre>
+<p>Add the required <code>firebaseAuthWithGoogle</code> method to authenticate with the signed in Google account:</p>
+<p><strong>SignInActivity.java</strong></p>
+<pre><code>private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+    Log.d(TAG, &#34;firebaseAuthWithGoogle:&#34; + acct.getId());
+    AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+    mFirebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener(this, new OnCompleteListener&lt;AuthResult&gt;() {
+                @Override
+                public void onComplete(@NonNull Task&lt;AuthResult&gt; task) {
+                    Log.d(TAG, &#34;signInWithCredential:onComplete:&#34; + task.isSuccessful());
+
+                    // If sign in fails, display a message to the user. If sign in succeeds
+                    // the auth state listener will be notified and logic to handle the
+                    // signed in user can be handled in the listener.
+                    if (!task.isSuccessful()) {
+                        Log.w(TAG, &#34;signInWithCredential&#34;, task.getException());
+                        Toast.makeText(SignInActivity.this, &#34;Authentication failed.&#34;,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                        finish();
+                    }
+                }
+            });
+}
+</code></pre>
+<p>That&#39;s it! You&#39;ve implemented authentication using Google as an Identity Provider in just a few method calls and without needing to manage any server-side configuration.</p>
+<h3 is-upgraded><strong>Test your work</strong></h3>
+<p>Run the app on your device. You should be immediately sent to the sign-in screen. Tap the Google Sign-In button. You should then be sent to the messaging screen if everything worked well.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Read Messages" duration="5">
+        <h3 is-upgraded><strong>Import Messages</strong></h3>
+<ol type="1">
+<li>In your project in Firebase console, select <strong>Database</strong> on the left navigation menu.</li>
+<li>Select Realtime Database option.</li>
+</ol>
+<aside class="special"><p><strong>Note</strong>: If you are presented with database creation option, please select Realtime database create option and apply the rules as done in previous step.</p>
+</aside>
+<ol type="1">
+<li>In the overflow menu of the Data tab, select <strong>Import JSON</strong>.</li>
+<li>Browse to the initial_messages.json file in the root of the cloned repository, and select it.</li>
+<li>Click <strong>Import</strong>.</li>
+</ol>
+<aside class="special"><p><strong>Note</strong>: This replaces any data currently in your database.</p>
+</aside>
+<p>After importing the JSON file, your database should look like this:</p>
+<pre><code>root
+        messages
+                -K2ib4H77rj0LYewF7dP
+                        text: &#34;hello&#34;
+                        name: &#34;anonymous&#34;
+                -K2ib5JHRbbL0NrztUfO
+                        text: &#34;how are you&#34;
+                        name: &#34;anonymous&#34;
+                -K2ib62mjHh34CAUbide
+                        text: &#34;i am fine&#34;
+                        name: &#34;anonymous&#34;
+</code></pre>
+<h3 is-upgraded>Add Firebase Realtime Database and Firebase Storage dependencies</h3>
+<p>In the dependencies block of the app/build.gradle file, the following dependencies should be included. For this codelab, they are already added for convenience; confirm this by looking in the app/build.gradle file:</p>
+<h3 is-upgraded>Dependency in app/build.gradle</h3>
+<pre><code>implementation &#39;com.google.firebase:firebase-database&#39;
+implementation &#39;com.google.firebase:firebase-storage&#39;
+</code></pre>
+<h3 is-upgraded>Synchronize messages</h3>
+<p>In this section we add code that synchronizes newly added messages to the app UI by:</p>
+<ul>
+<li>Initializing the Firebase Realtime Database and adding a listener to handle changes made to the data.</li>
+<li>Updating the <code>RecyclerView</code> adapter so new messages will be shown.</li>
+<li>Adding the Database instance variables with your other Firebase instance variables in the <code>MainActivity</code> class:</li>
+</ul>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>// Firebase instance variables
+...
+private DatabaseReference mFirebaseDatabaseReference;
+private FirebaseRecyclerAdapter&lt;FriendlyMessage, MessageViewHolder&gt;
+        mFirebaseAdapter;
+</code></pre>
+<p>Modify your MainActivity&#39;s <code>onCreate</code> method by replacing <em><code>mProgressBar.setVisibility(ProgressBar.INVISIBLE);</code></em> with the code defined below. This code initially adds all existing messages and then listens for new child entries under the messages path in your Firebase Realtime Database. It adds a new element to the UI for each message:</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>// New child entries
+mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+SnapshotParser&lt;FriendlyMessage&gt; parser = new SnapshotParser&lt;FriendlyMessage&gt;() {
+            @Override
+            public FriendlyMessage parseSnapshot(DataSnapshot dataSnapshot) {
+                FriendlyMessage friendlyMessage = dataSnapshot.getValue(FriendlyMessage.class);
+                if (friendlyMessage != null) {
+                    friendlyMessage.setId(dataSnapshot.getKey());
+                }
+                return friendlyMessage;
+            }
+        };
+
+DatabaseReference messagesRef = mFirebaseDatabaseReference.child(MESSAGES_CHILD);
+        FirebaseRecyclerOptions&lt;FriendlyMessage&gt; options =
+                new FirebaseRecyclerOptions.Builder&lt;FriendlyMessage&gt;()
+                        .setQuery(messagesRef, parser)
+                        .build();
+mFirebaseAdapter = new FirebaseRecyclerAdapter&lt;FriendlyMessage, MessageViewHolder&gt;(options) {
+            @Override
+            public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+                return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
+            }
+            
+            @Override
+            protected void onBindViewHolder(final MessageViewHolder viewHolder,
+                                            int position,
+                                            FriendlyMessage friendlyMessage) {
+       mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+if (friendlyMessage.getText() != null) {
+   viewHolder.messageTextView.setText(friendlyMessage.getText());
+   viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
+   viewHolder.messageImageView.setVisibility(ImageView.GONE);
+} else if (friendlyMessage.getImageUrl() != null) {
+   String imageUrl = friendlyMessage.getImageUrl();
+   if (imageUrl.startsWith(&#34;gs://&#34;)) {
+       StorageReference storageReference = FirebaseStorage.getInstance()
+               .getReferenceFromUrl(imageUrl);
+       storageReference.getDownloadUrl().addOnCompleteListener(
+               new OnCompleteListener&lt;Uri&gt;() {
+           @Override
+           public void onComplete(@NonNull Task&lt;Uri&gt; task) {
+               if (task.isSuccessful()) {
+                   String downloadUrl = task.getResult().toString();
+                   Glide.with(viewHolder.messageImageView.getContext())
+                           .load(downloadUrl)
+                           .into(viewHolder.messageImageView);
+               } else {
+                   Log.w(TAG, &#34;Getting download url was not successful.&#34;,
+                           task.getException());
+               }
+           }
+       });
+   } else {
+       Glide.with(viewHolder.messageImageView.getContext())
+               .load(friendlyMessage.getImageUrl())
+               .into(viewHolder.messageImageView);
+   }
+   viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
+   viewHolder.messageTextView.setVisibility(TextView.GONE);
+}
+
+
+viewHolder.messengerTextView.setText(friendlyMessage.getName());
+if (friendlyMessage.getPhotoUrl() == null) {
+   viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
+           R.drawable.ic_account_circle_black_36dp));
+} else {
+   Glide.with(MainActivity.this)
+           .load(friendlyMessage.getPhotoUrl())
+           .into(viewHolder.messengerImageView);
+}
+
+   }
+};
+
+mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+   @Override
+   public void onItemRangeInserted(int positionStart, int itemCount) {
+       super.onItemRangeInserted(positionStart, itemCount);
+       int friendlyMessageCount = mFirebaseAdapter.getItemCount();
+       int lastVisiblePosition =
+              mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
+       // If the recycler view is initially being loaded or the 
+       // user is at the bottom of the list, scroll to the bottom 
+       // of the list to show the newly added message.
+       if (lastVisiblePosition == -1 ||
+               (positionStart &gt;= (friendlyMessageCount - 1) &amp;&amp;
+                       lastVisiblePosition == (positionStart - 1))) {
+           mMessageRecyclerView.scrollToPosition(positionStart);
+       }
+   }
+});
+
+mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+</code></pre>
+<p>Appropriately start and stop listening for updates from Firebase Realtime Database. Update the <em><code>onPause</code></em> and <em><code>onResume</code></em> methods in <code>MainActivity</code> as shown below.</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>@Override
+public void onPause() {
+    mFirebaseAdapter.stopListening();
+    super.onPause();
+}
+
+@Override
+public void onResume() {
+    super.onResume();
+    mFirebaseAdapter.startListening();
+}
+</code></pre>
+<h3 is-upgraded>Test message sync</h3>
+<ol type="1">
+<li>Click <strong>Run</strong> ( <img alt="execute" style="width: 20.00px" src="img/c8b8a080b7ead886.png">).</li>
+<li>Add new messages directly in the Database section of the Firebase console. Confirm that they show up in the Friendly-Chat UI.</li>
+</ol>
+<ul>
+<li>Navigate to the Database section of the Firebase console. From the Data tab, select the ‘+&#39; sign on the messages element.</li>
+<li>Give the new element a name of -ABCD (note the ‘-&#39; sign) and leave the value empty for now.</li>
+<li>Select the ‘+&#39; sign on the -ABCD element</li>
+<li>Give the new element a name of &#34;name&#34; and value of &#34;Mary&#34;</li>
+<li>Select the ‘+&#39; sign on the -ABCD element again</li>
+<li>Give the new element a name of &#34;text&#34; and value of &#34;hello&#34;</li>
+<li>Select Add</li>
+</ul>
+<p>Congratulations, you just added a realtime database to your app!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Send Messages" duration="5">
+        <h3 is-upgraded><strong>Implement text message sending</strong></h3>
+<p>In this section, you will add the ability for app users to send text messages.  The code snippet below listens for click events on the send button, creates a new <code>FriendlyMessage</code> object with the contents of the message field, and pushes the message to the database.  The <code>push()</code> method adds an automatically generated ID to the pushed object&#39;s path.  These IDs are sequential which ensures that the new messages will be added to the end of the list.</p>
+<p>Update the <code>onClick</code> method of <code>mSendButton</code> in the <code>onCreate</code> method in the <code>MainActivity</code> class.  This code is at the bottom of the <code>onCreate</code> method already. Update the <code>onClick</code> body to match the code below:</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>mSendButton = (Button) findViewById(R.id.sendButton);
+mSendButton.setOnClickListener(new View.OnClickListener() {
+   @Override
+   public void onClick(View view) {
+       FriendlyMessage friendlyMessage = new 
+               FriendlyMessage(mMessageEditText.getText().toString(),
+                               mUsername,
+                               mPhotoUrl,
+                               null /* no image */);
+       mFirebaseDatabaseReference.child(MESSAGES_CHILD)
+               .push().setValue(friendlyMessage);
+       mMessageEditText.setText(&#34;&#34;);
+   }
+});
+</code></pre>
+<h3 is-upgraded><strong>Implement image message sending</strong></h3>
+<p>In this section, you will add the ability for app users to send image messages. Creating an image message is done with these steps:</p>
+<ul>
+<li>Select image</li>
+<li>Handle image selection</li>
+<li>Write temporary image message to the RTDB (Realtime Database)</li>
+<li>Begin to upload selected image</li>
+<li>Update image message URL to that of the uploaded image, once upload is complete</li>
+</ul>
+<h3 is-upgraded><strong>Select Image</strong></h3>
+<p>To add images this codelab uses Cloud Storage for Firebase. Cloud Storage is a good place to store the binary data of your app.</p>
+<p>In the Firebase console select <strong>Storage</strong> in the left navigation panel. Then click <strong>Get Started</strong> to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.</p>
+<p>With the following code snippet you will allow the user to select an image from the device&#39;s local storage. Update the <code>onClick</code> method of <code>mAddMessageImageView</code> in the <code>onCreate</code> method in the <code>MainActivity</code> class. This code is at the bottom of the <code>onCreate</code> method already. Update the <code>onClick</code> body to match the code below:</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>mAddMessageImageView = (ImageView) findViewById(R.id.addMessageImageView);
+mAddMessageImageView.setOnClickListener(new View.OnClickListener() {
+   @Override
+   public void onClick(View view) {
+       Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+       intent.addCategory(Intent.CATEGORY_OPENABLE);
+       intent.setType(&#34;image/*&#34;);
+       startActivityForResult(intent, REQUEST_IMAGE);
+   }
+});
+</code></pre>
+<h4 is-upgraded><strong>Handle image selection and write temp message</strong></h4>
+<p>Once the user has selected an image, a call to the <code>MainActivity</code>&#39;s <code>onActivityResult</code> will be fired. This is where you handle the user&#39;s image selection. Using the code snippet below, add the <code>onActivityResult</code> method to <code>MainActivity</code>. In this function you will write a message with a temporary image url to the database indicating the image is being uploaded.</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+   super.onActivityResult(requestCode, resultCode, data);
+   Log.d(TAG, &#34;onActivityResult: requestCode=&#34; + requestCode + &#34;, resultCode=&#34; + resultCode);
+
+   if (requestCode == REQUEST_IMAGE) {
+       if (resultCode == RESULT_OK) {
+           if (data != null) {
+               final Uri uri = data.getData();
+               Log.d(TAG, &#34;Uri: &#34; + uri.toString());
+
+               FriendlyMessage tempMessage = new FriendlyMessage(null, mUsername, mPhotoUrl,
+                       LOADING_IMAGE_URL);
+               mFirebaseDatabaseReference.child(MESSAGES_CHILD).push()
+                       .setValue(tempMessage, new DatabaseReference.CompletionListener() {
+                           @Override
+                           public void onComplete(DatabaseError databaseError,
+                                                  DatabaseReference databaseReference) {
+                               if (databaseError == null) {
+                                   String key = databaseReference.getKey();
+                                   StorageReference storageReference =
+                                           FirebaseStorage.getInstance()
+                                           .getReference(mFirebaseUser.getUid())
+                                           .child(key)
+                                           .child(uri.getLastPathSegment());
+
+                                   putImageInStorage(storageReference, uri, key);
+                               } else {
+                                   Log.w(TAG, &#34;Unable to write message to database.&#34;,
+                                           databaseError.toException());
+                               }
+                           }
+                       });
+           }
+       }
+   }
+}
+</code></pre>
+<h4 is-upgraded><strong>Upload image and update message</strong></h4>
+<p>Add the method <code>putImageInStorage</code> to <code>MainActivity</code>. It is called in <code>onActivityResult</code> to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image.</p>
+<h3 is-upgraded>MainActivity.java</h3>
+<pre><code>private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
+        storageReference.putFile(uri).addOnCompleteListener(MainActivity.this,
+                new OnCompleteListener&lt;UploadTask.TaskSnapshot&gt;() {
+                    @Override
+                    public void onComplete(@NonNull Task&lt;UploadTask.TaskSnapshot&gt; task) {
+                        if (task.isSuccessful()) {
+                            task.getResult().getMetadata().getReference().getDownloadUrl()
+                                    .addOnCompleteListener(MainActivity.this, 
+                                            new OnCompleteListener&lt;Uri&gt;() {
+                                @Override
+                                public void onComplete(@NonNull Task&lt;Uri&gt; task) {
+                                    if (task.isSuccessful()) {
+                                        FriendlyMessage friendlyMessage =
+                                                new FriendlyMessage(null, mUsername, mPhotoUrl,
+                                                        task.getResult().toString());
+                                        mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key)
+                                                .setValue(friendlyMessage);
+                                    }
+                                }
+                            });
+                        } else {
+                            Log.w(TAG, &#34;Image upload task was not successful.&#34;,
+                                    task.getException());
+                        }
+                    }
+                });
+    }
+</code></pre>
+<h3 is-upgraded><strong>Test Sending Messages</strong></h3>
+<ol type="1">
+<li>Click the  <img alt="execute" style="width: 20.00px" src="img/c8b8a080b7ead886.png"><strong>Run</strong> button.</li>
+<li>Enter a message and hit the send button, the new message should be visible in the app UI and in the Firebase console.</li>
+<li>Tap the &#34;+&#34; image to select an image from your device. The new message should be visible first with a placeholder image, and then with the selected image once the image upload is complete. The new message should also be visible in the Firebase console, as an object in the Database and as a blob in Storage.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Congratulations!" duration="1">
+        <p>You have used Firebase to easily build a real-time chat application.</p>
+<h3 class="checklist" is-upgraded><strong>What we&#39;ve covered</strong></h3>
+<ul>
+<li>Firebase Authentication</li>
+<li>Firebase Realtime Database</li>
+<li>Cloud Storage for Firebase</li>
+</ul>
+<h3 is-upgraded>Next Steps</h3>
+<ul>
+<li>Try the  <a href="https://codelabs.developers.google.com/codelabs/growfirebase-android/index.html?index=..%2F..index" target="_blank">Grow Friendly Chat</a> codelab, to learn how to grow the app you just built.</li>
+<li>Use Firebase in your own Android app.</li>
+</ul>
+<h3 is-upgraded><strong>Learn More</strong></h3>
+<ul>
+<li><a href="https://firebase.google.com" target="_blank">firebase.google.com</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

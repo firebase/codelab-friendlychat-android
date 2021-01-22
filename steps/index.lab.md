@@ -17,7 +17,7 @@ feedback link: https://github.com/firebase/codelab-friendlychat-android/issues
 Duration: 05:00
 
 
-<img src="img/4a42050f9a677dbb.png" alt="4a42050f9a677dbb.png"  width="173.00" />
+<img src="img/screenshot.png" alt="screenshot"  width="173.00" />
 
 Image: Working Friendly Chat app.
 
@@ -51,8 +51,8 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 > 
 > The "friendlychat-android" repository contains two directories:
 > 
-> *  <img src="img/a1beacb239657647.png" alt="android_studio_folder.png"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
-> *  <img src="img/a1beacb239657647.png" alt="android_studio_folder.png"  width="20.00" />**build-android**—Completed code for the finished sample app.
+> *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
+> *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android**—Completed code for the finished sample app.
 > 
 > **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Create Firebase Console Project](https://codelabs.developers.google.com/codelabs/firebase-android/#3) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
 
@@ -61,7 +61,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 Duration: 03:00
 
 
-From Android Studio, select the `build-android-start` directory ( <img src="img/a1beacb239657647.png" alt="android_studio_folder.png"  width="20.00" />)   from the sample code download (**File** &gt; **Open** &gt; .../codelab-friendlychat-android/build-android-start).
+From Android Studio, select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />)   from the sample code download (**File** &gt; **Open** &gt; .../codelab-friendlychat-android/build-android-start).
 
 You should now have the android-start project open in Android Studio. If you see a warning about a google-services.json file missing, don't worry. It will be added in the next step.
 
@@ -119,7 +119,7 @@ To be sure that all dependencies are available to your app, you should sync your
 Duration: 03:00
 
 
-Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time.  Connect your Android device, and click **Run** ( <img src="img/c8b8a080b7ead886.png" alt="execute.png"  width="20.00" />)in the Android Studio toolbar.
+Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time.  Connect your Android device, and click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />)in the Android Studio toolbar.
 
 The app should launch on your device. At this point, you should see an empty message list, and sending and receiving messages will not work. In the next section, you authenticate users so they can use Friendly Chat.
 
@@ -529,7 +529,7 @@ public void onResume() {
 
 #### Test message sync
 
-1. Click **Run** ( <img src="img/c8b8a080b7ead886.png" alt="execute.png"  width="20.00" />).
+1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
 2. Add new messages directly in the Database section of the Firebase console. Confirm that they show up in the Friendly-Chat UI.
 
 * Navigate to the Database section of the Firebase console. From the Data tab, select the '+' sign on the messages element.
@@ -689,7 +689,7 @@ private void putImageInStorage(StorageReference storageReference, Uri uri, final
 
 #### **Test Sending Messages**
 
-1. Click the  <img src="img/c8b8a080b7ead886.png" alt="execute.png"  width="20.00" />**Run** button.
+1. Click the  <img src="img/execute.png" alt="execute"  width="20.00" />**Run** button.
 2. Enter a message and hit the send button, the new message should be visible in the app UI and in the Firebase console.
 3. Tap the "+" image to select an image from your device. The new message should be visible first with a placeholder image, and then with the selected image once the image upload is complete. The new message should also be visible in the Firebase console, as an object in the Database and as a blob in Storage.
 

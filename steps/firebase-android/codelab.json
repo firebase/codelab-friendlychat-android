@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2021-01-21T18:03:12-08:00",
+  "id": "firebase-android",
+  "duration": 36,
+  "title": "Firebase Android Codelab - Build Friendly Chat",
+  "summary": "In this codelab, you’ll learn how to build an Android app with Firebase platform.",
+  "source": "index.lab.md",
+  "theme": "",
+  "status": [
+    "[published]"
+  ],
+  "category": [
+    "firebase",
+    "android"
+  ],
+  "tags": [
+    "firebase-dev-summit-2016",
+    "firebase17",
+    "gdd17",
+    "io2016",
+    "io2017",
+    "io2018",
+    "io2019",
+    "kiosk",
+    "tag-firebase",
+    "web"
+  ],
+  "feedback": "https://github.com/firebase/codelab-friendlychat-android/issues",
+  "url": "firebase-android"
+}
