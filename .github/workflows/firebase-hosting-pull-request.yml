@@ -2,7 +2,7 @@
 # https://github.com/firebase/firebase-tools
 
 name: Deploy to Firebase Hosting on PR
-'on': pull_request
+'on': pull_request_target
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
@@ -13,15 +13,14 @@ jobs:
       # Add any build steps here. For example:
       - run: |
           go get github.com/googlecodelabs/tools/claat
-          which go
-          ls $HOME/go/bin
-          echo "$HOME/go/bin" >> $GITHUB_PATH
+          ls
+          cd steps
           $HOME/go/bin/claat export index.lab.md
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FIR_CODELABS_89252 }}'
           projectId: fir-codelabs-89252
-          entry-point: steps/firebase-android
+          entryPoint: steps/firebase-android
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
