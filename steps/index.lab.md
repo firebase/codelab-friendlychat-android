@@ -80,7 +80,7 @@ Duration: 03:00
 
 1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
 
-<img src="img/add-android-app.png"
+<img src="img/add-android-app.png" alt="add android app" width="30.00" />
 
 2. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
 3. Enter the SHA1 of your signing keystore. Run the command below in the project directory to determine the SHA1 of your debug key:
