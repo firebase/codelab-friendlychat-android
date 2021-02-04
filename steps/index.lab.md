@@ -23,23 +23,22 @@ Image: Working Friendly Chat app.
 
 Welcome to the Friendly Chat codelab. In this codelab, you'll learn how to use the Firebase platform to create a chat app on Android.
 
-#### What you learn **to do**
+#### What you'll learn
 
 * Allow users to sign in.
 * Sync data using the Firebase Realtime Database.
 * Store binary files in Firebase 
 
-#### What you need
+#### What you'll need
 
-*  [Android Studio](https://developer.android.com/studio) version 3.4+.
-* Sample code.
-* A test device with Android 2.3+ and Google Play services 9.8 or later, or an  [Emulator](https://developer.android.com/studio/run/emulator#install) with Google Play services 9.8 or later
-* If using a device, a connection cable.
+*  [Android Studio](https://developer.android.com/studio) version 4.0+.
+* An Android device or [Emulator](https://developer.android.com/studio/run/emulator#install) with Android 4.4+.
 
 
 ## Get the sample code
 Duration: 05:00
 
+### Clone the repository
 
 Clone the GitHub repository from the command line:
 
@@ -54,83 +53,82 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android**—Completed code for the finished sample app.
 > 
-> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Create Firebase Console Project](https://codelabs.developers.google.com/codelabs/firebase-android/#3) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
+> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Create Firebase Console Project](https://codelabs.developers.google.com/codelabs/firebase-android/#2) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
 
 
-## Import the starter app
+### Import into Android Studio
+
+In Android Studio click **File** > **Open** and  select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
+
+You should now have the `build-android-start project` open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in the next step.
+
+
+## Create Firebase project
 Duration: 03:00
 
+In this step you will create a Firebase project to use during this codelab.
 
-From Android Studio, select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />)   from the sample code download (**File** &gt; **Open** &gt; .../codelab-friendlychat-android/build-android-start).
-
-You should now have the android-start project open in Android Studio. If you see a warning about a google-services.json file missing, don't worry. It will be added in the next step.
-
-
-## Create Firebase console project
-Duration: 03:00
-
-
-### **Add Firebase to the project**
-
-1. Go to the  [Firebase console](https://console.firebase.google.com).
+1. In your browser go to the  [Firebase console](https://console.firebase.google.com).
 2. Select **Add project**.
-3. Select or enter a Project name.
-4. Follow the remaining setup steps in the Firebase console, then click Create project (or Add Firebase, if you're using an existing Google project).
+3. Select or enter a project name, you can use any name you want.
+4. You will not need Google Analytics for this project, so you can disable it when asked.
+5. Click **Create Project** and when your project is ready click **Continue**
 
 
-## Add Firebase
-Duration: 01:00
+## Add Firebase to your app
+Duration: 03:00
 
+1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
 
-1. From the overview screen of your new project, click the Android icon to launch the setup workflow.
-2. Enter the codelab's package name: `com.google.firebase.codelab.friendlychat`
-3. Enter the SHA1 of your signing keystore. If you are using the standard debug keystore, use the command below to find the SHA1 hash:
+<img src="img/add-android-app.png"
+
+2. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
+3. Enter the SHA1 of your signing keystore. Run the command below in the project directory to determine the SHA1 of your debug key:
 
 ```console
-keytool -alias androiddebugkey -keystore ~/.android/debug.keystore -list -v -storepass android
+./gradlew signingReport
+```
+
+You should see some output like this, the important line is the `SHA1` key:
+
+```console
+Store: /Users/username/.android/debug.keystore
+Alias: AndroidDebugKey
+MD5: A5:88:41:04:8F:06:59:6A:AE:33:76:87:AA:AD:19:23
+SHA1: A7:89:F5:06:A8:07:A1:22:EC:90:6A:A6:EA:C3:D4:8B:3A:30:AB:18
+SHA-256: 05:A2:2A:35:EE:F2:51:23:72:4D:72:67:A5:6A:8A:58:22:2C:00:A6:AB:F6:45:D5:A1:82:D8:90:A4:69:C8:FE
+Valid until: Wednesday, August 10, 2044
 ```
 
 > aside positive
 > 
-> **Note**: Your debug keystore, usually called "debug.keystore", is typically located at 
+> If you're unable to fins your SHA1 hash see [this page](https://developers.google.com/android/guides/client-auth) for more information.
+
+4. Click **Register App** and then click **Download google-services.json** to download the `google-services` configuration file.
+5. Copy the `google-services.json` file into the *`app`* directory in your project. After the file is downloaded you can **Skip** the next steps shown in the console (they've already been done for you in the build-android-start project).
+
+> aside positive
 > 
-> $HOME/.android/debug.keystore.  If this file does not exist, Android Studio will create it for you the first time you run any app.
-> 
-> See  [here](https://developers.google.com/android/guides/client-auth) for more detail on finding SHA1.
+> In the `build.gradle` and `app/build.gradle` files you'll notice that the `com.google.gms:google-services` plugin has already been added to your app.
 
-#### **Add google-services.json file to your app**
-
-After adding the package name and SHA1 and selecting Register**, Click Download google-services.json** to obtain your Firebase Android config file then copy the google-services.json file into the *`app`* directory in your project. After the file is downloaded you can **Skip** the next steps shown in the console (they've already been done for you in the build-android-start project).
-
-#### **Add google-services plugin to your app**
-
-The google-services plugin uses the google-services.json file to configure your application to use Firebase. The following line should already be added to the end of the build.gradle file in the *`app`* directory of your project (check to confirm):
-
-```
-apply plugin: 'com.google.gms.google-services'
-```
-
-#### **Sync your project with gradle files**
-
-To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select **File &gt; Sync Project with Gradle Files** from the Android Studio toolbar.
-
+6. To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select **File** > **Sync Project with Gradle Files** from the Android Studio toolbar.
 
 ## Run the starter app
 Duration: 03:00
 
+Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time. 
 
-Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time.  Connect your Android device, and click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />)in the Android Studio toolbar.
+1. Start your Android device or emulator.
+2. In Android Studio click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />) in the toolbar.
 
 The app should launch on your device. At this point, you should see an empty message list, and sending and receiving messages will not work. In the next section, you authenticate users so they can use Friendly Chat.
-
 
 ## Enable Authentication
 Duration: 05:00
 
-
 Let's require a user to sign in before reading or posting any Friendly Chat messages.
 
-#### **Firebase Realtime Database Rules**
+#### Realtime Database Security Rules
 
 Access to your Firebase Database is configured by a set of rules written in a JSON configuration language.
 
