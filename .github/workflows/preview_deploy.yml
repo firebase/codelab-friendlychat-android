@@ -19,13 +19,13 @@ jobs:
         uses: actions/github-script@v3.1.0
         with:
           script: |
-            echo "getting artifacts"
+            console.log("getting artifacts")
             var artifacts = await github.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: ${{ github.event.workflow_run.id }},
             });
-            echo "got artifacts"
+            console.log("got artifacts")
             var matchPrArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "pr"
             })[0];
