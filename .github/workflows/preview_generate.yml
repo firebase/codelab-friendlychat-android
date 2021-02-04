@@ -20,8 +20,9 @@ jobs:
           mkdir -p ./pr
           echo ${{ github.event.number }} > ./pr/NR
       - uses: actions/upload-artifact@v2
-        name: preview
-        path: firebase-android/
+        with:
+          name: preview
+          path: firebase-android/
       - uses: actions/upload-artifact@v2
         with:
           name: pr
