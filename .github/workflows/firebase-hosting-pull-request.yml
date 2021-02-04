@@ -16,8 +16,11 @@ jobs:
           ls
           cd steps
           $HOME/go/bin/claat export index.lab.md
+          git config user.name github-actions
+          git config user.email github-actions@github.com
           git add firebase-android
-          git commit -m "ci(preview): add generated preview" 
+          git commit -m "ci(preview): add generated preview"
+          git push
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
