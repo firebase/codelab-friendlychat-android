@@ -53,6 +53,7 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/firebase-android.zip', Buffer.from(downloadPreview.data));
       - run: |
           unzip pr.zip
+          echo "pr_number=$(cat NR)" >> $GITHUB_ENV
           mkdir firebase-android
           unzip firebase-android.zip -d firebase-android
       - name: Deploy preview
@@ -62,5 +63,6 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FIR_CODELABS_89252 }}'
           projectId: fir-codelabs-89252
           entryPoint: firebase-android
+          channelId: ${{ env.pr_number }}
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
