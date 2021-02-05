@@ -53,7 +53,8 @@ jobs:
             fs.writeFileSync('${{github.workspace}}/firebase-android.zip', Buffer.from(downloadPreview.data));
       - run: |
           unzip pr.zip
-          unzip firebase-android.zip
+          mkdir firebase-android
+          unzip firebase-android.zip -d firebase-android
       - name: Deploy preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
