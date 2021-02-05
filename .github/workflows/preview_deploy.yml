@@ -19,31 +19,35 @@ jobs:
         uses: actions/github-script@v3.1.0
         with:
           script: |
-            console.log("getting artifacts")
             var artifacts = await github.actions.listWorkflowRunArtifacts({
                owner: context.repo.owner,
                repo: context.repo.repo,
                run_id: ${{ github.event.workflow_run.id }},
             });
-            console.log("got artifacts")
             var matchPrArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "pr"
             })[0];
             var matchPreviewArtifact = artifacts.data.artifacts.filter((artifact) => {
               return artifact.name == "preview"
             })[0];
+            console.log(matchPrArtifact);
+            console.log(matchPreviewArtifact);
+            console.log("getting downloadPr");
             var downloadPr = await github.actions.downloadArtifact({
                owner: context.repo.owner,
                repo: context.repo.repo,
                artifact_id: matchPrArtifact.id,
                archive_format: 'zip',
             });
+            console.log("got downloadPr");
+            console.log("getting downloadPreview");
             var downloadPreview = await github.actions.downloadArtifact({
                owner: context.repo.owner,
                repo: context.repo.repo,
                artifact_id: matchPreviewArtifact.id,
                archive_format: 'zip',
             });
+            console.log("got downloadPreview");
             var fs = require('fs');
             fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(downloadPr.data));
             fs.writeFileSync('${{github.workspace}}/firebase-android.zip', Buffer.from(downloadPreview.data));
