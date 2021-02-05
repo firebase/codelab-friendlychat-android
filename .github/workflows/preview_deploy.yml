@@ -57,6 +57,7 @@ jobs:
           mkdir firebase-android
           unzip firebase-android.zip -d firebase-android
       - name: Deploy preview
+        id: deploy_preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
@@ -66,3 +67,14 @@ jobs:
           channelId: ${{ env.pr_number }}
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels
+      - name: Write Comment
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ env.pr_number }},
+              body: 'View preview ${{ steps.deploy_preview.outputs.details_url }}'
+            });
