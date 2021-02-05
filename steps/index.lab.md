@@ -8,7 +8,7 @@ feedback link: https://github.com/firebase/codelab-friendlychat-android/issues
 
 ---
 
-# Firebase Android Codelab - Friendly Chat
+# Firebase Android Codelab - Friendly Chats
 
 [Codelab Feedback](https://github.com/firebase/codelab-friendlychat-android/issues)
 
