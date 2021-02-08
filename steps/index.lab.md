@@ -80,7 +80,7 @@ In this step you will create a Firebase project to use during this codelab and a
 
 1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
 
-<img src="img/add-android-app.png" alt="add android app" width="30.00" />
+<img src="img/add-android-app.png" alt="add android app" />
 
 2. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
 3. Enter the SHA1 of your signing keystore. Run the command below in the project directory to determine the SHA1 of your debug key:
@@ -174,11 +174,11 @@ Click "Publish" to publish the new rules.
 
 For more information on how this works (including documentation on the "auth" variable) see the Firebase  [security documentation](https://firebase.google.com/docs/database/security/quickstart).
 
-Add the Auth instance variables in the `MainActivity` class under the `// Firebase instance variables` comment:
 
 ### Add basic sign-in functionality
 
 Next we'll add some basic Firebase Authentication code to the app to detect users and implement a sign-in screen.
+
 
 #### Check for current user
 
@@ -189,7 +189,6 @@ First add the following instance variables to `MainActivity.java`:
 ```
 // Firebase instance variables
 private FirebaseAuth mFirebaseAuth;
-private FirebaseUser mFirebaseUser;
 ```
 
 Now let's modify `MainActivity.java` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate` method **after** `mUsername` has been initialized:
@@ -197,42 +196,52 @@ Now let's modify `MainActivity.java` to send the user to the sign-in screen when
 **MainActivity.java**
 
 ```
-// Initialize Firebase Auth
+// Initialize Firebase Auth and check if the user is signed in
 mFirebaseAuth = FirebaseAuth.getInstance();
-mFirebaseUser = mFirebaseAuth.getCurrentUser();
-if (mFirebaseUser == null) {
+if (mFirebaseAuth.getCurrentUser() == null) {
     // Not signed in, launch the Sign In activity
     startActivity(new Intent(this, SignInActivity.class));
     finish();
     return;
-} else {
-    mUsername = mFirebaseUser.getDisplayName();
-    if (mFirebaseUser.getPhotoUrl() != null) {
-        mPhotoUrl = mFirebaseUser.getPhotoUrl().toString();
-    }
 }
 ```
 
-Then add a new case to `onOptionsItemSelected()` to handle the sign out button:
+Then implement the `getUserPhotoUrl()` amd `getUserName()` methods to return the appropriate information about the currently authenticated Firebase user:
 
 **MainActivity.java**
 
 ```
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.sign_out_menu:
-                mFirebaseAuth.signOut();
-                mSignInClient.signOut();
-
-                mUsername = ANONYMOUS;
-                startActivity(new Intent(this, SignInActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+@Nullable
+private String getUserPhotoUrl() {
+    FirebaseUser user = mFirebaseAuth.getCurrentUser();
+    if (user != null && user.getPhotoUrl() != null) {
+        return user.getPhotoUrl().toString();
     }
+
+    return null;
+}
+
+private String getUserName() {
+    FirebaseUser user = mFirebaseAuth.getCurrentUser();
+    if (user != null) {
+        return user.getDisplayName();
+    }
+
+    return ANONYMOUS;
+}
+```
+
+Then implement the `signOut()` method to handle the sign out button:
+
+**MainActivity.java**
+
+```
+private void signOut() {
+    mFirebaseAuth.signOut();
+    mSignInClient.signOut();
+    startActivity(new Intent(this, SignInActivity.class));
+    finish();
+}
 ```
 
 Now we have all of the logic in place to send the user to the sign-in screen when necessary. Next we need to implement the sign-in screen to properly authenticate users.
@@ -259,22 +268,7 @@ Then, edit the `onCreate()` method to initialize Firebase in the same way you di
 mFirebaseAuth = FirebaseAuth.getInstance();
 ```
 
-Next, initiate signing in with Google. Update `SignInActivity`'s `onClick` method to look like this:
-
-**SignInActivity.java**
-
-```
-@Override
-public void onClick(View v) {
-   switch (v.getId()) {
-       case R.id.sign_in_button:
-           signIn();
-           break;
-   }
-}
-```
-
-Add the required signIn method that actually presents the user with the Google Sign-In UI.
+Next, initiate signing in with Google. Update `SignInActivity` `signIn()` method to look like this:
 
 **SignInActivity.java**
 
@@ -285,7 +279,7 @@ private void signIn() {
 }
 ```
 
-Next, add the `onActivityResult` method to `SignInActivity` to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase.
+Next, implement the `onActivityResult` method to `SignInActivity` to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase:
 
 **SignInActivity.java**
 
@@ -309,7 +303,7 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-Add the required `firebaseAuthWithGoogle` method to authenticate with the signed in Google account:
+Implement the `firebaseAuthWithGoogle` method to authenticate with the signed in Google account:
 
 **SignInActivity.java**
 
@@ -318,22 +312,23 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
     Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
     AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
     mFirebaseAuth.signInWithCredential(credential)
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                 @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "signInWithCredential", task.getException());
-                        Toast.makeText(SignInActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                        finish();
-                    }
+                public void onSuccess(AuthResult authResult) {
+                    // If sign in succeeds the auth state listener will be notified and logic to 
+                    // handle the signed in user can be handled in the listener.
+                    Log.d(TAG, "signInWithCredential:success");
+                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
+                    finish();
+                }
+            })
+            .addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithCredential", e);
+                    Toast.makeText(SignInActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
                 }
             });
 }
@@ -349,39 +344,18 @@ Run the app on your device. You should be immediately sent to the sign-in screen
 ## Read Messages
 Duration: 05:00
 
+In this step we will add functionality to read and display messages stored in Realtime Database.
 
-#### Import Messages
+### Import Sample Messages
 
-1. In your project in Firebase console, select **Database** on the left navigation menu.
-2. Select Realtime Database option.
+1. In the Firebase console, select **Realtime Database** from the left navigation menu.
+2. In the overflow menu of the Data tab, select **Import JSON**. 
+3. Browse to the initial_messages.json file in the root of the cloned repository, and select it. 
+4. Click **Import**.
 
-> aside positive
-> 
-> **Note**: If you are presented with database creation option, please select Realtime database create option and apply the rules as done in previous step.
+<img src="img/import-data.gif" />
 
-3. In the overflow menu of the Data tab, select **Import JSON**. 
-4. Browse to the initial_messages.json file in the root of the cloned repository, and select it. 
-5. Click **Import**.
-
-> aside positive
-> 
-> **Note**: This replaces any data currently in your database.
-
-After importing the JSON file, your database should look like this:
-
-```
-root
-        messages
-                -K2ib4H77rj0LYewF7dP
-                        text: "hello"
-                        name: "anonymous"
-                -K2ib5JHRbbL0NrztUfO
-                        text: "how are you"
-                        name: "anonymous"
-                -K2ib62mjHh34CAUbide
-                        text: "i am fine"
-                        name: "anonymous"
-```
+### Read Data
 
 #### Add Firebase Realtime Database and Firebase Storage dependencies
 
@@ -406,118 +380,100 @@ In this section we add code that synchronizes newly added messages to the app UI
 
 ```
 // Firebase instance variables
-...
-private DatabaseReference mFirebaseDatabaseReference;
-private FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>
-        mFirebaseAdapter;
+// ...
+private FirebaseDatabase mDatabase;
+private FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder> mFirebaseAdapter;
 ```
 
 Modify your MainActivity's `onCreate` method by replacing *`mProgressBar.setVisibility(ProgressBar.INVISIBLE);`* with the code defined below. This code initially adds all existing messages and then listens for new child entries under the messages path in your Firebase Realtime Database. It adds a new element to the UI for each message:
 
-#### MainActivity.java
+**MainActivity.java**
 
 ```
-// New child entries
-mFirebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
-SnapshotParser<FriendlyMessage> parser = new SnapshotParser<FriendlyMessage>() {
-            @Override
-            public FriendlyMessage parseSnapshot(DataSnapshot dataSnapshot) {
-                FriendlyMessage friendlyMessage = dataSnapshot.getValue(FriendlyMessage.class);
-                if (friendlyMessage != null) {
-                    friendlyMessage.setId(dataSnapshot.getKey());
-                }
-                return friendlyMessage;
-            }
-        };
+// Initialize Realtime Database
+mDatabase = FirebaseDatabase.getInstance();
+DatabaseReference messagesRef = mDatabase.getReference().child(MESSAGES_CHILD);
 
-DatabaseReference messagesRef = mFirebaseDatabaseReference.child(MESSAGES_CHILD);
-        FirebaseRecyclerOptions<FriendlyMessage> options =
-                new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
-                        .setQuery(messagesRef, parser)
-                        .build();
+// The FirebaseRecyclerAdapter class comes from the FirebaseUI library
+// See: https://github.com/firebase/FirebaseUI-Android
+FirebaseRecyclerOptions<FriendlyMessage> options =
+        new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
+                .setQuery(messagesRef, FriendlyMessage.class)
+                .build();
+
 mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>(options) {
-            @Override
-            public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
-            }
-            
-            @Override
-            protected void onBindViewHolder(final MessageViewHolder viewHolder,
-                                            int position,
-                                            FriendlyMessage friendlyMessage) {
-       mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-if (friendlyMessage.getText() != null) {
-   viewHolder.messageTextView.setText(friendlyMessage.getText());
-   viewHolder.messageTextView.setVisibility(TextView.VISIBLE);
-   viewHolder.messageImageView.setVisibility(ImageView.GONE);
-} else if (friendlyMessage.getImageUrl() != null) {
-   String imageUrl = friendlyMessage.getImageUrl();
-   if (imageUrl.startsWith("gs://")) {
-       StorageReference storageReference = FirebaseStorage.getInstance()
-               .getReferenceFromUrl(imageUrl);
-       storageReference.getDownloadUrl().addOnCompleteListener(
-               new OnCompleteListener<Uri>() {
-           @Override
-           public void onComplete(@NonNull Task<Uri> task) {
-               if (task.isSuccessful()) {
-                   String downloadUrl = task.getResult().toString();
-                   Glide.with(viewHolder.messageImageView.getContext())
-                           .load(downloadUrl)
-                           .into(viewHolder.messageImageView);
-               } else {
-                   Log.w(TAG, "Getting download url was not successful.",
-                           task.getException());
-               }
-           }
-       });
-   } else {
-       Glide.with(viewHolder.messageImageView.getContext())
-               .load(friendlyMessage.getImageUrl())
-               .into(viewHolder.messageImageView);
-   }
-   viewHolder.messageImageView.setVisibility(ImageView.VISIBLE);
-   viewHolder.messageTextView.setVisibility(TextView.GONE);
-}
+    @Override
+    public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
+    }
 
-
-viewHolder.messengerTextView.setText(friendlyMessage.getName());
-if (friendlyMessage.getPhotoUrl() == null) {
-   viewHolder.messengerImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this,
-           R.drawable.ic_account_circle_black_36dp));
-} else {
-   Glide.with(MainActivity.this)
-           .load(friendlyMessage.getPhotoUrl())
-           .into(viewHolder.messengerImageView);
-}
-
-   }
+    @Override
+    protected void onBindViewHolder(MessageViewHolder vh, int position, FriendlyMessage message) {
+        mBinding.progressBar.setVisibility(ProgressBar.INVISIBLE);
+        vh.bindMessage(message);
+    }
 };
 
-mFirebaseAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-   @Override
-   public void onItemRangeInserted(int positionStart, int itemCount) {
-       super.onItemRangeInserted(positionStart, itemCount);
-       int friendlyMessageCount = mFirebaseAdapter.getItemCount();
-       int lastVisiblePosition =
-              mLinearLayoutManager.findLastCompletelyVisibleItemPosition();
-       // If the recycler view is initially being loaded or the 
-       // user is at the bottom of the list, scroll to the bottom 
-       // of the list to show the newly added message.
-       if (lastVisiblePosition == -1 ||
-               (positionStart >= (friendlyMessageCount - 1) &&
-                       lastVisiblePosition == (positionStart - 1))) {
-           mMessageRecyclerView.scrollToPosition(positionStart);
-       }
-   }
-});
+mLinearLayoutManager = new LinearLayoutManager(this);
+mLinearLayoutManager.setStackFromEnd(true);
+mBinding.messageRecyclerView.setLayoutManager(mLinearLayoutManager);
+mBinding.messageRecyclerView.setAdapter(mFirebaseAdapter);
 
-mMessageRecyclerView.setAdapter(mFirebaseAdapter);
+// Scroll down when a new message arrives
+// See MyScrollToBottomObserver.java for details
+mFirebaseAdapter.registerAdapterDataObserver(
+        new MyScrollToBottomObserver(mBinding.messageRecyclerView, mFirebaseAdapter, mLinearLayoutManager));
 ```
 
-Appropriately start and stop listening for updates from Firebase Realtime Database. Update the *`onPause`* and *`onResume`* methods in `MainActivity` as shown below.
+Next in the `MessageViewHolder` class implement the `bindMessage()` method:
 
-#### MainActivity.java
+**MessageViewHolder.java**
+
+```
+public void bindMessage(FriendlyMessage friendlyMessage) {
+    if (friendlyMessage.getText() != null) {
+        messageTextView.setText(friendlyMessage.getText());
+        messageTextView.setVisibility(TextView.VISIBLE);
+        messageImageView.setVisibility(ImageView.GONE);
+    } else if (friendlyMessage.getImageUrl() != null) {
+        String imageUrl = friendlyMessage.getImageUrl();
+        if (imageUrl.startsWith("gs://")) {
+            StorageReference storageReference = FirebaseStorage.getInstance()
+                    .getReferenceFromUrl(imageUrl);
+
+            storageReference.getDownloadUrl()
+                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String downloadUrl = uri.toString();
+                            Glide.with(messageImageView.getContext())
+                                    .load(downloadUrl)
+                                    .into(messageImageView);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Getting download url was not successful.", e);
+                        }
+                    });
+        } else {
+            Glide.with(messageImageView.getContext())
+                    .load(friendlyMessage.getImageUrl())
+                    .into(messageImageView);
+        }
+
+        messageImageView.setVisibility(ImageView.VISIBLE);
+        messageTextView.setVisibility(TextView.GONE);
+    }
+}
+```
+
+Finally, back in `MainActivity`,start and stop listening for updates from Firebase Realtime Database. 
+Update the *`onPause`* and *`onResume`* methods in `MainActivity` as shown below:
+
+**MainActivity.java**
 
 ```
 @Override
@@ -533,18 +489,13 @@ public void onResume() {
 }
 ```
 
-#### Test message sync
+### Test message sync
 
 1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
-2. Add new messages directly in the Database section of the Firebase console. Confirm that they show up in the Friendly-Chat UI.
+2. In the Firebase console return to the **Realtime Database** section and manually add a new message with the ID `-ABCD`.
+Confirm that the message shows up in your Android app:
 
-* Navigate to the Database section of the Firebase console. From the Data tab, select the '+' sign on the messages element.
-* Give the new element a name of -ABCD (note the '-' sign) and leave the value empty for now.
-* Select the '+' sign on the -ABCD element
-* Give the new element a name of "name" and value of "Mary"
-* Select the '+' sign on the -ABCD element again
-* Give the new element a name of "text" and value of "hello"
-* Select Add
+<img src="img/add-message.gif" />
 
 Congratulations, you just added a realtime database to your app!
 
@@ -552,8 +503,7 @@ Congratulations, you just added a realtime database to your app!
 ## Send Messages
 Duration: 05:00
 
-
-#### **Implement text message sending**
+#### Implement text message sending
 
 In this section, you will add the ability for app users to send text messages.  The code snippet below listens for click events on the send button, creates a new `FriendlyMessage` object with the contents of the message field, and pushes the message to the database.  The `push()` method adds an automatically generated ID to the pushed object's path.  These IDs are sequential which ensures that the new messages will be added to the end of the list.  
 
