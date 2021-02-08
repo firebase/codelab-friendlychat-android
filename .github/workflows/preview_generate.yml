@@ -1,6 +1,7 @@
 name: Generate Preview
-on: pull_request
-  paths:
+on:
+  pull_request:
+    paths:
     - 'steps/**'
 jobs:
   build_and_preview:
