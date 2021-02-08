@@ -1,7 +1,8 @@
 name: Generate Preview
-on: pull_request
-  paths:
-  - 'steps/**'
+on:
+  pull_request:
+    paths:
+    - 'steps/**'
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
