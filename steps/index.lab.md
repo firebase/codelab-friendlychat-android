@@ -53,7 +53,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android**—Completed code for the finished sample app.
 > 
-> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Create Firebase Console Project](https://codelabs.developers.google.com/codelabs/firebase-android/#2) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
+> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Step #3](https://codelabs.developers.google.com/codelabs/firebase-android/#2) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
 
 
 ### Import into Android Studio
@@ -61,6 +61,57 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 In Android Studio click **File** > **Open** and  select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
 
 You should now have the `build-android-start project` open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in the next step.
+
+
+### Check Dependencies
+
+In this codelab all of the dependencies you will need have already been added for you, but it's important to understand how to add the Firebase SDK to your app:
+
+**build.gradle**
+
+```groovy
+buildscript {
+    // ...
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.2'
+
+        // The google-services plugin is required to parse the google-services.json file
+        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
+    }
+}
+```
+
+**app/build.gradle**
+
+```groovy
+apply plugin: 'com.android.application'
+apply plugin: 'com.google.firebase.crashlytics'
+
+android {
+    // ...
+}
+
+dependencies {
+    // ...
+
+    // Google Sign In SDK
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    // Firebase SDK
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Firebase UI Library
+    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+}
+
+// Apply the 'google-services' plugin
+apply plugin: 'com.google.gms.google-services'
+```
 
 
 ## Create Firebase project
@@ -78,20 +129,11 @@ In this step you will create a Firebase project to use during this codelab and a
 
 ### Add Firebase to your app
 
-1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
-
-<img src="img/add-android-app.png" alt="add android app" />
-
-2. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
-3. Enter the SHA1 of your signing keystore. Run the command below in the project directory to determine the SHA1 of your debug key:
+Before you begin this step, get the SHA1 hash of your app: Run the command below in the project directory to determine the SHA1 of your debug key:
 
 ```console
 ./gradlew signingReport
-```
 
-You should see some output like this, the important line is the `SHA1` key:
-
-```console
 Store: /Users/username/.android/debug.keystore
 Alias: AndroidDebugKey
 MD5: A5:88:41:04:8F:06:59:6A:AE:33:76:87:AA:AD:19:23
@@ -100,18 +142,17 @@ SHA-256: 05:A2:2A:35:EE:F2:51:23:72:4D:72:67:A5:6A:8A:58:22:2C:00:A6:AB:F6:45:D5
 Valid until: Wednesday, August 10, 2044
 ```
 
-> aside positive
-> 
-> If you're unable to fins your SHA1 hash see [this page](https://developers.google.com/android/guides/client-auth) for more information.
+You should see some output like the above, the important line is the `SHA1` key. If you're unable to find your SHA1 hash see [this page](https://developers.google.com/android/guides/client-auth) for more information.
 
-4. Click **Register App** and then click **Download google-services.json** to download the `google-services` configuration file.
-5. Copy the `google-services.json` file into the *`app`* directory in your project. After the file is downloaded you can **Skip** the next steps shown in the console (they've already been done for you in the build-android-start project).
+Now in the Firebase console, follow these steps to add an Android app to your project:
 
-> aside positive
-> 
-> In the `build.gradle` and `app/build.gradle` files you'll notice that the `com.google.gms:google-services` plugin has already been added to your app.
+  1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
+     <img src="img/add-android-app.png" alt="add android app" />
+  1. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
+  1. Click **Register App** and then click **Download google-services.json** to download the `google-services` configuration file.
+  1. Copy the `google-services.json` file into the *`app`* directory in your project. After the file is downloaded you can **Skip** the next steps shown in the console (they've already been done for you in the build-android-start project).
+  1. To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select **File** > **Sync Project with Gradle Files** from the Android Studio toolbar.
 
-6. To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select **File** > **Sync Project with Gradle Files** from the Android Studio toolbar.
 
 ## Run the starter app
 Duration: 03:00
@@ -141,16 +182,6 @@ Before your application can access the Firebase Authentication APIs on behalf of
 
 If you get errors later in this codelab with the message "CONFIGURATION_NOT_FOUND", come back to this step and double check your work.
 
-#### Add Firebase Auth dependency
-
-The firebase-auth SDK allows easy management of authenticated users of your application. Confirm the existence of this dependency in your `app/build.gradle` file.
-
-#### app/build.gradle
-
-```
-implementation 'com.google.firebase:firebase-auth'
-```
-
 ### Configure Realtime Database
 
 As mentioned, this app will store chat messages in Firebase Realtime Database. In this step we will create a database and configure the security via a JSON configuration language called Security Rules.
@@ -164,8 +195,12 @@ Once the database has been created, select the **Rules** tab and update the rule
 ```
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null"
+    "messages": {
+      "$message": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
   }
 }
 ```
@@ -357,17 +392,6 @@ In this step we will add functionality to read and display messages stored in Re
 
 ### Read Data
 
-#### Add Firebase Realtime Database and Firebase Storage dependencies
-
-In the dependencies block of the app/build.gradle file, the following dependencies should be included. For this codelab, they are already added for convenience; confirm this by looking in the app/build.gradle file:
-
-#### Dependency in app/build.gradle
-
-```
-implementation 'com.google.firebase:firebase-database'
-implementation 'com.google.firebase:firebase-storage'
-```
-
 #### Synchronize messages
 
 In this section we add code that synchronizes newly added messages to the app UI by:
@@ -503,38 +527,43 @@ Congratulations, you just added a realtime database to your app!
 ## Send Messages
 Duration: 05:00
 
-#### Implement text message sending
+### Implement text message sending
 
-In this section, you will add the ability for app users to send text messages.  The code snippet below listens for click events on the send button, creates a new `FriendlyMessage` object with the contents of the message field, and pushes the message to the database.  The `push()` method adds an automatically generated ID to the pushed object's path.  These IDs are sequential which ensures that the new messages will be added to the end of the list.  
+In this section, you will add the ability for app users to send text messages. The code snippet below listens for click events on the send button, creates a new `FriendlyMessage` object with the contents of the message field, and pushes the message to the database.  The `push()` method adds an automatically generated ID to the pushed object's path.  These IDs are sequential which ensures that the new messages will be added to the end of the list.  
 
-Update the `onClick` method of `mSendButton` in the `onCreate` method in the `MainActivity` class.  This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
+Update the click listener of the send button in the `onCreate` method in the `MainActivity` class. 
+This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
 
-#### MainActivity.java
+**MainActivity.java**
 
 ```
-mSendButton = (Button) findViewById(R.id.sendButton);
-mSendButton.setOnClickListener(new View.OnClickListener() {
-   @Override
-   public void onClick(View view) {
-       FriendlyMessage friendlyMessage = new 
-               FriendlyMessage(mMessageEditText.getText().toString(),
-                               mUsername,
-                               mPhotoUrl,
-                               null /* no image */);
-       mFirebaseDatabaseReference.child(MESSAGES_CHILD)
-               .push().setValue(friendlyMessage);
-       mMessageEditText.setText("");
-   }
+// Disable the send button when there's no text in the input field
+// See MyButtonObserver.java for details
+mBinding.messageEditText.addTextChangedListener(new MyButtonObserver(mBinding.sendButton));
+
+// When the send button is clicked, send a text message
+mBinding.sendButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        FriendlyMessage friendlyMessage = new
+                FriendlyMessage(mBinding.messageEditText.getText().toString(),
+                getUserName(),
+                getUserPhotoUrl(),
+                null /* no image */);
+
+        mDatabase.getReference().child(MESSAGES_CHILD).push().setValue(friendlyMessage);
+        mBinding.messageEditText.setText("");
+    }
 });
 ```
 
-#### Implement image message sending
+### Implement image message sending
 
 In this section, you will add the ability for app users to send image messages. Creating an image message is done with these steps:
 
 * Select image
 * Handle image selection
-* Write temporary image message to the RTDB (Realtime Database)
+* Write temporary image message to the Realtime Database
 * Begin to upload selected image
 * Update image message URL to that of the uploaded image, once upload is complete
 
@@ -544,66 +573,68 @@ To add images this codelab uses Cloud Storage for Firebase. Cloud Storage is a g
 
 In the Firebase console select **Storage** in the left navigation panel. Then click **Get Started** to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.
 
-With the following code snippet you will allow the user to select an image from the device's local storage. Update the `onClick` method of `mAddMessageImageView` in the `onCreate` method in the `MainActivity` class. This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
+With the following code snippet you will allow the user to select an image from the device's local storage. Update the click listener of `addMessageImageView` in the `onCreate` method in the `MainActivity` class. This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
 
 #### MainActivity.java
 
 ```
-mAddMessageImageView = (ImageView) findViewById(R.id.addMessageImageView);
-mAddMessageImageView.setOnClickListener(new View.OnClickListener() {
-   @Override
-   public void onClick(View view) {
-       Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-       intent.addCategory(Intent.CATEGORY_OPENABLE);
-       intent.setType("image/*");
-       startActivityForResult(intent, REQUEST_IMAGE);
-   }
+// When the image button is clicked, launch the image picker
+mBinding.addMessageImageView.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        startActivityForResult(intent, REQUEST_IMAGE);
+    }
 });
 ```
 
-##### **Handle image selection and write temp message**
+##### Handle image selection and write temp message
 
 Once the user has selected an image, a call to the `MainActivity`'s `onActivityResult` will be fired. This is where you handle the user's image selection. Using the code snippet below, add the `onActivityResult` method to `MainActivity`. In this function you will write a message with a temporary image url to the database indicating the image is being uploaded.
 
-#### MainActivity.java
+**MainActivity.java**
 
 ```
 @Override
 protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-   super.onActivityResult(requestCode, resultCode, data);
-   Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+    super.onActivityResult(requestCode, resultCode, data);
+    Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
 
-   if (requestCode == REQUEST_IMAGE) {
-       if (resultCode == RESULT_OK) {
-           if (data != null) {
-               final Uri uri = data.getData();
-               Log.d(TAG, "Uri: " + uri.toString());
+    if (requestCode == REQUEST_IMAGE) {
+        if (resultCode == RESULT_OK && data != null) {
+            final Uri uri = data.getData();
+            Log.d(TAG, "Uri: " + uri.toString());
 
-               FriendlyMessage tempMessage = new FriendlyMessage(null, mUsername, mPhotoUrl,
-                       LOADING_IMAGE_URL);
-               mFirebaseDatabaseReference.child(MESSAGES_CHILD).push()
-                       .setValue(tempMessage, new DatabaseReference.CompletionListener() {
-                           @Override
-                           public void onComplete(DatabaseError databaseError,
-                                                  DatabaseReference databaseReference) {
-                               if (databaseError == null) {
-                                   String key = databaseReference.getKey();
-                                   StorageReference storageReference =
-                                           FirebaseStorage.getInstance()
-                                           .getReference(mFirebaseUser.getUid())
-                                           .child(key)
-                                           .child(uri.getLastPathSegment());
+            final FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            FriendlyMessage tempMessage = new FriendlyMessage(
+                    null, getUserName(), getUserPhotoUrl(), LOADING_IMAGE_URL);
 
-                                   putImageInStorage(storageReference, uri, key);
-                               } else {
-                                   Log.w(TAG, "Unable to write message to database.",
-                                           databaseError.toException());
-                               }
-                           }
-                       });
-           }
-       }
-   }
+            mDatabase.getReference().child(MESSAGES_CHILD).push()
+                    .setValue(tempMessage, new DatabaseReference.CompletionListener() {
+                        @Override
+                        public void onComplete(DatabaseError databaseError,
+                                               DatabaseReference databaseReference) {
+                            if (databaseError != null) {
+                                Log.w(TAG, "Unable to write message to database.",
+                                        databaseError.toException());
+                                return;
+                            }
+
+                            // Build a StorageReference and then upload the file
+                            String key = databaseReference.getKey();
+                            StorageReference storageReference =
+                                    FirebaseStorage.getInstance()
+                                            .getReference(user.getUid())
+                                            .child(key)
+                                            .child(uri.getLastPathSegment());
+
+                            putImageInStorage(storageReference, uri, key);
+                        }
+                    });
+        }
+    }
 }
 ```
 
@@ -615,32 +646,34 @@ Add the method `putImageInStorage` to `MainActivity`. It is called in `onActivit
 
 ```
 private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
-        storageReference.putFile(uri).addOnCompleteListener(MainActivity.this,
-                new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getMetadata().getReference().getDownloadUrl()
-                                    .addOnCompleteListener(MainActivity.this, 
-                                            new OnCompleteListener<Uri>() {
+    // First upload the image to Cloud Storage
+    storageReference.putFile(uri)
+            .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    // After the image loads, get a public downloadUrl for the image
+                    // and add it to the message.
+                    taskSnapshot.getMetadata().getReference().getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
-                                public void onComplete(@NonNull Task<Uri> task) {
-                                    if (task.isSuccessful()) {
-                                        FriendlyMessage friendlyMessage =
-                                                new FriendlyMessage(null, mUsername, mPhotoUrl,
-                                                        task.getResult().toString());
-                                        mFirebaseDatabaseReference.child(MESSAGES_CHILD).child(key)
-                                                .setValue(friendlyMessage);
-                                    }
+                                public void onSuccess(Uri uri) {
+                                    FriendlyMessage friendlyMessage = new FriendlyMessage(
+                                            null, getUserName(), getUserPhotoUrl(), uri.toString());
+                                    mDatabase.getReference()
+                                            .child(MESSAGES_CHILD)
+                                            .child(key)
+                                            .setValue(friendlyMessage);
                                 }
                             });
-                        } else {
-                            Log.w(TAG, "Image upload task was not successful.",
-                                    task.getException());
-                        }
-                    }
-                });
-    }
+                }
+            })
+            .addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Image upload task was not successful.", e);
+                }
+            });
+}
 ```
 
 #### Test Sending Messages
@@ -653,21 +686,13 @@ private void putImageInStorage(StorageReference storageReference, Uri uri, final
 ## Congratulations!
 Duration: 01:00
 
+You just built a real-time chat application using Firebase!
 
-You have used Firebase to easily build a real-time chat application.
-
-#### What we've covered
+#### What you learned
 
 * Firebase Authentication
 * Firebase Realtime Database
 * Cloud Storage for Firebase
 
-#### Next Steps
-
-* Try the  [Grow Friendly Chat](https://codelabs.developers.google.com/codelabs/growfirebase-android/index.html?index=..%2F..index) codelab, to learn how to grow the app you just built.
-* Use Firebase in your own Android app.
-
-#### **Learn More**
-
-*  [firebase.google.com](https://firebase.google.com)
+Next try using what you learned to add Firebase to your own Android app! To learn more about Firebae visit [firebase.google.com](https://firebase.google.com)
 

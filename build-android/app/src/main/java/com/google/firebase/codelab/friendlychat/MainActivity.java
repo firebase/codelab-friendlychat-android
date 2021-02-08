@@ -40,6 +40,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -219,64 +221,66 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
 
         if (requestCode == REQUEST_IMAGE) {
-            if (resultCode == RESULT_OK) {
-                if (data != null) {
-                    final Uri uri = data.getData();
-                    Log.d(TAG, "Uri: " + uri.toString());
+            if (resultCode == RESULT_OK && data != null) {
+                final Uri uri = data.getData();
+                Log.d(TAG, "Uri: " + uri.toString());
 
-                    final FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                    FriendlyMessage tempMessage = new FriendlyMessage(null, getUserName(), getUserPhotoUrl(),
-                            LOADING_IMAGE_URL);
+                final FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                FriendlyMessage tempMessage = new FriendlyMessage(
+                        null, getUserName(), getUserPhotoUrl(), LOADING_IMAGE_URL);
 
-                    mDatabase.getReference().child(MESSAGES_CHILD).push()
-                            .setValue(tempMessage, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError,
-                                                       DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-                                        String key = databaseReference.getKey();
-                                        StorageReference storageReference =
-                                                FirebaseStorage.getInstance()
-                                                        .getReference(user.getUid())
-                                                        .child(key)
-                                                        .child(uri.getLastPathSegment());
-
-                                        putImageInStorage(storageReference, uri, key);
-                                    } else {
-                                        Log.w(TAG, "Unable to write message to database.",
-                                                databaseError.toException());
-                                    }
+                mDatabase.getReference().child(MESSAGES_CHILD).push()
+                        .setValue(tempMessage, new DatabaseReference.CompletionListener() {
+                            @Override
+                            public void onComplete(DatabaseError databaseError,
+                                                   DatabaseReference databaseReference) {
+                                if (databaseError != null) {
+                                    Log.w(TAG, "Unable to write message to database.",
+                                            databaseError.toException());
+                                    return;
                                 }
-                            });
-                }
+
+                                // Build a StorageReference and then upload the file
+                                String key = databaseReference.getKey();
+                                StorageReference storageReference =
+                                        FirebaseStorage.getInstance()
+                                                .getReference(user.getUid())
+                                                .child(key)
+                                                .child(uri.getLastPathSegment());
+
+                                putImageInStorage(storageReference, uri, key);
+                            }
+                        });
             }
         }
     }
 
     private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
-        storageReference.putFile(uri).addOnCompleteListener(MainActivity.this,
-                new OnCompleteListener<UploadTask.TaskSnapshot>() {
+        // First upload the image to Cloud Storage
+        storageReference.putFile(uri)
+                .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            task.getResult().getMetadata().getReference().getDownloadUrl()
-                                    .addOnCompleteListener(MainActivity.this,
-                                            new OnCompleteListener<Uri>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Uri> task) {
-                                                    if (task.isSuccessful()) {
-                                                        FriendlyMessage friendlyMessage =
-                                                                new FriendlyMessage(null, getUserName(), getUserPhotoUrl(),
-                                                                        task.getResult().toString());
-                                                        mDatabase.getReference().child(MESSAGES_CHILD).child(key)
-                                                                .setValue(friendlyMessage);
-                                                    }
-                                                }
-                                            });
-                        } else {
-                            Log.w(TAG, "Image upload task was not successful.",
-                                    task.getException());
-                        }
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        // After the image loads, get a public downloadUrl for the image
+                        // and add it to the message.
+                        taskSnapshot.getMetadata().getReference().getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        FriendlyMessage friendlyMessage = new FriendlyMessage(
+                                                null, getUserName(), getUserPhotoUrl(), uri.toString());
+                                        mDatabase.getReference()
+                                                .child(MESSAGES_CHILD)
+                                                .child(key)
+                                                .setValue(friendlyMessage);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Image upload task was not successful.", e);
                     }
                 });
     }
