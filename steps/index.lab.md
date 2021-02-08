@@ -117,7 +117,7 @@ apply plugin: 'com.google.gms.google-services'
 ## Create Firebase project
 Duration: 06:00
 
-In this step you will create a Firebase project to use during this codelab and add the project configuration to your ap.
+In this step you will create a Firebase project to use during this codelab and add the project configuration to your app.
 
 ### Create a new project
 
@@ -134,7 +134,7 @@ Before you begin this step, get the SHA1 hash of your app: Run the command below
 ```console
 ./gradlew signingReport
 
-Store: /Users/username/.android/debug.keystore
+Store: /Users/<username>/.android/debug.keystore
 Alias: AndroidDebugKey
 MD5: A5:88:41:04:8F:06:59:6A:AE:33:76:87:AA:AD:19:23
 SHA1: A7:89:F5:06:A8:07:A1:22:EC:90:6A:A6:EA:C3:D4:8B:3A:30:AB:18
