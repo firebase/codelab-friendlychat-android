@@ -64,9 +64,11 @@ You should now have the `build-android-start project` open in Android Studio. If
 
 
 ## Create Firebase project
-Duration: 03:00
+Duration: 06:00
 
-In this step you will create a Firebase project to use during this codelab.
+In this step you will create a Firebase project to use during this codelab and add the project configuration to your ap.
+
+### Create a new project
 
 1. In your browser go to the  [Firebase console](https://console.firebase.google.com).
 2. Select **Add project**.
@@ -74,9 +76,7 @@ In this step you will create a Firebase project to use during this codelab.
 4. You will not need Google Analytics for this project, so you can disable it when asked.
 5. Click **Create Project** and when your project is ready click **Continue**
 
-
-## Add Firebase to your app
-Duration: 03:00
+### Add Firebase to your app
 
 1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
 
@@ -126,13 +126,40 @@ The app should launch on your device. At this point, you should see an empty mes
 ## Enable Authentication
 Duration: 05:00
 
-Let's require a user to sign in before reading or posting any Friendly Chat messages.
+This app will use Firebase Realtime Database to store all chat messages. Before we add data, we should make sure that the app is secure and that only authenticated users can post messages. In this step we will enable Firebase Authentication and configure Realtime Database Security Rules.
 
-#### Realtime Database Security Rules
+### Configure Firebase Authentication
 
-Access to your Firebase Database is configured by a set of rules written in a JSON configuration language.
+Before your application can access the Firebase Authentication APIs on behalf of your users, you will have to enable it 
 
-Go to your project in the Firebase console and select **Database**. Select the **Realtime Database** option (not Cloud Firestore). If prompted for security rules, with choices to start in either **test mode** or **locked mode**, choose **locked mode**. Once the default rules are established, select the **Rules** tab and update the rules configuration with the following:
+1. Navigate to the  [Firebase console](http://console.firebase.google.com) and select your project
+2. Select **Authentication**
+3. Select the **Sign In Method** tab
+4. Toggle the **Google** switch to enabled (blue)
+5. Set a support email.
+6. Press **Save** on the resulting dialog
+
+If you get errors later in this codelab with the message "CONFIGURATION_NOT_FOUND", come back to this step and double check your work.
+
+#### Add Firebase Auth dependency
+
+The firebase-auth SDK allows easy management of authenticated users of your application. Confirm the existence of this dependency in your `app/build.gradle` file.
+
+#### app/build.gradle
+
+```
+implementation 'com.google.firebase:firebase-auth'
+```
+
+### Configure Realtime Database
+
+As mentioned, this app will store chat messages in Firebase Realtime Database. In this step we will create a database and configure the security via a JSON configuration language called Security Rules.
+
+1. Go to your project in the Firebase console and select **Realtime Database** from the left navigation.
+2. Click **Create Database** create a new Realtime Database instance and then select the `us-central1` region and click **Next**.
+3. When prompted about security rules, choose **locked mode** and click **Enable**. 
+
+Once the database has been created, select the **Rules** tab and update the rules configuration with the following:
 
 ```
 {
@@ -147,32 +174,17 @@ Click "Publish" to publish the new rules.
 
 For more information on how this works (including documentation on the "auth" variable) see the Firebase  [security documentation](https://firebase.google.com/docs/database/security/quickstart).
 
-#### **Configure Authentication APIs**
-
-Before your application can access the Firebase Authentication APIs on behalf of your users, you will have to enable it 
-
-1. Navigate to the  [Firebase console](http://console.firebase.google.com) and select your project
-2. Select **Authentication**
-3. Select the **Sign In Method** tab
-4. Toggle the **Google** switch to enabled (blue)
-5. Set a support email.
-6. Press **Save** on the resulting dialog
-
-If you get errors later in this codelab with the message "CONFIGURATION_NOT_FOUND", come back to this step and double check your work.
-
-#### **Add Firebase Auth dependency**
-
-The firebase-auth SDK allows easy management of authenticated users of your application. Confirm the existence of this dependency in your `app/build.gradle` file.
-
-#### app/build.gradle
-
-```
-implementation 'com.google.firebase:firebase-auth'
-```
-
 Add the Auth instance variables in the `MainActivity` class under the `// Firebase instance variables` comment:
 
-#### MainActivity.java (instance variable)
+### Add basic sign-in functionality
+
+Next we'll add some basic Firebase Authentication code to the app to detect users and implement a sign-in screen.
+
+#### Check for current user
+
+First add the following instance variables to `MainActivity.java`:
+
+**MainActivity.java**
 
 ```
 // Firebase instance variables
@@ -180,11 +192,7 @@ private FirebaseAuth mFirebaseAuth;
 private FirebaseUser mFirebaseUser;
 ```
 
-#### **Check for current user**
-
-Now let's modify `MainActivity.java` to send the user to the sign-in screen whenever they open the app and are unauthenticated. 
-
-Add the following to the `onCreate` method **after** `mUsername` has been initialized:
+Now let's modify `MainActivity.java` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate` method **after** `mUsername` has been initialized:
 
 **MainActivity.java**
 
@@ -229,7 +237,7 @@ Then add a new case to `onOptionsItemSelected()` to handle the sign out button:
 
 Now we have all of the logic in place to send the user to the sign-in screen when necessary. Next we need to implement the sign-in screen to properly authenticate users.
 
-#### **Implement the Sign-In screen**
+#### Implement the Sign-In screen
 
 Open the file `SignInActivity.java`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to Sign-In with Google, and then use that Google account to authenticate with Firebase.
 
@@ -333,7 +341,7 @@ private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
 That's it! You've implemented authentication using Google as an Identity Provider in just a few method calls and without needing to manage any server-side configuration.
 
-#### **Test your work**
+#### Test your work
 
 Run the app on your device. You should be immediately sent to the sign-in screen. Tap the Google Sign-In button. You should then be sent to the messaging screen if everything worked well.
 
@@ -342,7 +350,7 @@ Run the app on your device. You should be immediately sent to the sign-in screen
 Duration: 05:00
 
 
-#### **Import Messages**
+#### Import Messages
 
 1. In your project in Firebase console, select **Database** on the left navigation menu.
 2. Select Realtime Database option.
@@ -570,7 +578,7 @@ mSendButton.setOnClickListener(new View.OnClickListener() {
 });
 ```
 
-#### **Implement image message sending**
+#### Implement image message sending
 
 In this section, you will add the ability for app users to send image messages. Creating an image message is done with these steps:
 
@@ -580,7 +588,7 @@ In this section, you will add the ability for app users to send image messages. 
 * Begin to upload selected image
 * Update image message URL to that of the uploaded image, once upload is complete
 
-#### **Select Image**
+#### Select Image
 
 To add images this codelab uses Cloud Storage for Firebase. Cloud Storage is a good place to store the binary data of your app.
 
@@ -649,7 +657,7 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-##### **Upload image and update message**
+#### Upload image and update message
 
 Add the method `putImageInStorage` to `MainActivity`. It is called in `onActivityResult` to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image. 
 
@@ -685,7 +693,7 @@ private void putImageInStorage(StorageReference storageReference, Uri uri, final
     }
 ```
 
-#### **Test Sending Messages**
+#### Test Sending Messages
 
 1. Click the  <img src="img/execute.png" alt="execute"  width="20.00" />**Run** button.
 2. Enter a message and hit the send button, the new message should be visible in the app UI and in the Firebase console.
@@ -698,7 +706,7 @@ Duration: 01:00
 
 You have used Firebase to easily build a real-time chat application.
 
-#### **What we've covered**
+#### What we've covered
 
 * Firebase Authentication
 * Firebase Realtime Database
