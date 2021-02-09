@@ -196,10 +196,8 @@ Once the database has been created, select the **Rules** tab and update the rule
 {
   "rules": {
     "messages": {
-      "$message": {
-        ".read": "auth != null",
-        ".write": "auth != null"
-      }
+      ".read": "auth.uid != null",
+      ".write": "auth.uid != null"
     }
   }
 }
