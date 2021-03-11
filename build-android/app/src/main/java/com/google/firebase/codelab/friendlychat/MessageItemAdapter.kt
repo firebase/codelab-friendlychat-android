@@ -21,6 +21,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -50,38 +51,69 @@ class MessageItemAdapter(options: FirebaseRecyclerOptions<FriendlyMessage>) :
     }
 
     inner class MessageItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var messageTextView: TextView = itemView.findViewById(R.id.messageTextView)
-        var messageImageView: ImageView = itemView.findViewById(R.id.messageImageView)
-        var messengerTextView: TextView = itemView.findViewById(R.id.messengerTextView)
-        var messengerImageView: CircleImageView = itemView.findViewById(R.id.messengerImageView)
+        private var messageTextView: TextView = itemView.findViewById(R.id.messageTextView)
+        private var messageImageView: ImageView = itemView.findViewById(R.id.messageImageView)
+        private var messengerTextView: TextView = itemView.findViewById(R.id.messengerTextView)
+        private var messengerImageView: CircleImageView =
+            itemView.findViewById(R.id.messengerImageView)
 
         fun bind(item: FriendlyMessage) {
+            setMessengerViews(item)
+
             if (item.text != null) {
                 messageTextView.text = item.text
                 messageTextView.visibility = TextView.VISIBLE
                 messageImageView.visibility = ImageView.GONE
+                setMessengerNameConstraintParams(messageTextView)
             } else if (item.imageUrl != null) {
-                val imageUrl = item.imageUrl
-                if (imageUrl!!.startsWith("gs://")) {
-                    val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
-                    storageReference.downloadUrl
-                        .addOnSuccessListener { uri ->
-                            val downloadUrl = uri.toString()
-                            Glide.with(messageImageView.context)
-                                .load(downloadUrl)
-                                .into(messageImageView)
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w(TAG, "Getting download url was unsuccessful.", e)
-                        }
-                } else {
-                    Glide.with(messageImageView.context)
-                        .load(item.imageUrl)
-                        .into(messageImageView)
-                }
+                loadImageIntoView(messageImageView, item.imageUrl)
                 messageImageView.visibility = ImageView.VISIBLE
                 messageTextView.visibility = TextView.GONE
+                setMessengerNameConstraintParams(messageImageView)
             }
+        }
+
+        private fun setMessengerViews(item: FriendlyMessage) {
+            messengerTextView.text = if (item.name == null) "Anonymous" else item.name
+
+            if (item.photoUrl != null) {
+                loadImageIntoView(messengerImageView, item.photoUrl)
+            } else {
+                messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
+            }
+        }
+
+        private fun loadImageIntoView(view: ImageView, url: String?) {
+            if (url!!.startsWith("gs://")) {
+                val storageReference = Firebase.storage.getReferenceFromUrl(url)
+                storageReference.downloadUrl
+                    .addOnSuccessListener { uri ->
+                        val downloadUrl = uri.toString()
+                        Glide.with(view.context)
+                            .load(downloadUrl)
+                            .into(view)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(
+                            TAG,
+                            "Getting download url was not successful.",
+                            e
+                        )
+                    }
+            } else {
+                Glide.with(view.context)
+                    .load(url)
+                    .into(view)
+            }
+        }
+
+        // Since message is either ImageView or TextView, setting Messenger Name to appear
+        // under whichever view is showing
+        private fun setMessengerNameConstraintParams(view: View) {
+            val params = messengerTextView.layoutParams as ConstraintLayout.LayoutParams
+            params.startToStart = view.id
+            params.topToBottom = view.id
+            messengerTextView.requestLayout()
         }
     }
 
