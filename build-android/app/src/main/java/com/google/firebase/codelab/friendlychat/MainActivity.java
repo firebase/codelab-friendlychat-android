@@ -39,13 +39,12 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.codelab.friendlychat.databinding.ActivityMainBinding;
+import com.google.firebase.codelab.friendlychat.model.FriendlyMessage;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -77,8 +76,7 @@ public class MainActivity extends AppCompatActivity {
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mDatabase;
-    private FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>
-            mFirebaseAdapter;
+    private MessageItemAdapter mFirebaseAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,26 +108,15 @@ public class MainActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance();
         DatabaseReference messagesRef = mDatabase.getReference().child(MESSAGES_CHILD);
 
-        // The FirebaseRecyclerAdapter class comes from the FirebaseUI library
+        // The FirebaseRecyclerAdapter class and options come from the FirebaseUI library
         // See: https://github.com/firebase/FirebaseUI-Android
         FirebaseRecyclerOptions<FriendlyMessage> options =
                 new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
                         .setQuery(messagesRef, FriendlyMessage.class)
                         .build();
 
-        mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>(options) {
-            @Override
-            public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-                LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-                return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
-            }
-
-            @Override
-            protected void onBindViewHolder(MessageViewHolder vh, int position, FriendlyMessage message) {
-                mBinding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-                vh.bindMessage(message);
-            }
-        };
+        mFirebaseAdapter = new MessageItemAdapter(options);
+        mBinding.progressBar.setVisibility(ProgressBar.INVISIBLE);
 
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
