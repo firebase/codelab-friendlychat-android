@@ -15,7 +15,6 @@
  */
 package com.google.firebase.codelab.friendlychat
 
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +22,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.codelab.friendlychat.MainActivity.*
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -117,7 +115,7 @@ class MessageItemAdapter(
             val textView = if (senderIsUser) messengerSelfTextView else messengerTextView
             val imageView = if (senderIsUser) messengerSelfImageView else messengerImageView
 
-            textView.text = if (item.name == null) Companion.ANONYMOUS else item.name
+            textView.text = if (item.name == null) ANONYMOUS else item.name
 
             if (item.photoUrl != null) {
                 loadImageIntoView(imageView, item.photoUrl)
@@ -169,6 +167,5 @@ class MessageItemAdapter(
 
     companion object {
         const val TAG = "MessageItemAdapter"
-        const val ANONYMOUS = "anonymous"
     }
 }

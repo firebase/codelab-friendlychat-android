@@ -10,6 +10,7 @@
         android:id="@+id/messageRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorWhite"
         android:layout_above="@+id/linearLayout"
         android:paddingHorizontal="16dp" />
 
@@ -36,7 +37,7 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:background="@color/colorTitle"
+            android:background="@drawable/edit_text_shadow"
             android:hint="Say something..."
             android:inputType="text"
             android:padding="10dp" />
