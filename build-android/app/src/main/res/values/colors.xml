@@ -3,8 +3,9 @@
     <color name="colorPrimary">#FF9800</color>
     <color name="colorPrimaryDark">#E65100</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="colorLightGray">#dedede</color>
-    <color name="colorDarkGray">#b4b4b4</color>
     <color name="colorBlack">#000000</color>
-    <color name="colorBlue">#0073cf</color>
+    <color name="colorLightGray">#ececec</color>
+    <color name="colorGray">#dedede</color>
+    <color name="colorDarkGray">#b4b4b4</color>
+    <color name="colorBlue">#2962FF</color>
 </resources>

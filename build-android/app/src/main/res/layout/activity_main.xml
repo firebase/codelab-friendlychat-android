@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            ads:srcCompat="@drawable/ic_add_black_24dp" />
+            ads:srcCompat="@drawable/outline_add_photo_alternate_24" />
 
         <EditText
             android:id="@+id/messageEditText"
@@ -42,13 +42,13 @@
             android:inputType="text"
             android:padding="10dp" />
 
-        <Button
+        <ImageView
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:enabled="false"
-            android:text="SEND" />
+            android:src="@drawable/outline_send_gray_24"
+            android:enabled="false" />
 
     </LinearLayout>
 
