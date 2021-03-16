@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         val options = FirebaseRecyclerOptions.Builder<FriendlyMessage>()
             .setQuery(messagesRef, FriendlyMessage::class.java)
             .build()
-        adapter = MessageItemAdapter(options)
+        adapter = MessageItemAdapter(options, userName)
         binding.progressBar.visibility = ProgressBar.INVISIBLE
         manager = LinearLayoutManager(this)
         manager.stackFromEnd = true

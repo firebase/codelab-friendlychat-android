@@ -27,6 +27,7 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.codelab.friendlychat.MainActivity.*
+import com.google.firebase.codelab.friendlychat.MainActivity.Companion.ANONYMOUS
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -36,7 +37,7 @@ import de.hdodenhof.circleimageview.CircleImageView
 // See: https://github.com/firebase/FirebaseUI-Android
 class MessageItemAdapter(
     options: FirebaseRecyclerOptions<FriendlyMessage>,
-    currentUserName: String
+    currentUserName: String?
 ) :
     FirebaseRecyclerAdapter<FriendlyMessage, MessageItemAdapter.MessageItemViewHolder>(options) {
 
