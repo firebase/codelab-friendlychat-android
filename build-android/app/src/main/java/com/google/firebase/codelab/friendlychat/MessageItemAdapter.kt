@@ -26,9 +26,9 @@ import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import de.hdodenhof.circleimageview.CircleImageView
-
 
 // The FirebaseRecyclerAdapter class and options come from the FirebaseUI library
 // See: https://github.com/firebase/FirebaseUI-Android
@@ -63,8 +63,7 @@ class MessageItemAdapter(options: FirebaseRecyclerOptions<FriendlyMessage>) :
             } else if (item.imageUrl != null) {
                 val imageUrl = item.imageUrl
                 if (imageUrl!!.startsWith("gs://")) {
-                    val storageReference = FirebaseStorage.getInstance()
-                        .getReferenceFromUrl(imageUrl)
+                    val storageReference = Firebase.storage.getReferenceFromUrl(imageUrl)
                     storageReference.downloadUrl
                         .addOnSuccessListener { uri ->
                             val downloadUrl = uri.toString()
@@ -73,11 +72,7 @@ class MessageItemAdapter(options: FirebaseRecyclerOptions<FriendlyMessage>) :
                                 .into(messageImageView)
                         }
                         .addOnFailureListener { e ->
-                            Log.w(
-                                TAG,
-                                "Getting download url was not successful.",
-                                e
-                            )
+                            Log.w(TAG, "Getting download url was unsuccessful.", e)
                         }
                 } else {
                     Glide.with(messageImageView.context)
