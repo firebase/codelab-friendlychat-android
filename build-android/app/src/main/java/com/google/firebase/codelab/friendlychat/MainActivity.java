@@ -120,17 +120,17 @@ public class MainActivity extends AppCompatActivity {
 
         mLinearLayoutManager = new LinearLayoutManager(this);
         mLinearLayoutManager.setStackFromEnd(true);
+
         mBinding.messageRecyclerView.setLayoutManager(mLinearLayoutManager);
         mBinding.messageRecyclerView.setAdapter(mFirebaseAdapter);
 
         // Scroll down when a new message arrives
-        // See MyScrollToBottomObserver.java for details
+        // See MyScrollToBottomObserver for details
         mFirebaseAdapter.registerAdapterDataObserver(
                 new MyScrollToBottomObserver(mBinding.messageRecyclerView, mFirebaseAdapter, mLinearLayoutManager));
 
-
         // Disable the send button when there's no text in the input field
-        // See MyButtonObserver.java for details
+        // See MyButtonObserver for details
         mBinding.messageEditText.addTextChangedListener(new MyButtonObserver(mBinding.sendButton));
 
         // When the send button is clicked, send a text message
