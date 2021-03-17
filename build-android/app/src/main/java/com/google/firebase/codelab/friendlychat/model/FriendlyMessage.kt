@@ -21,10 +21,9 @@ class FriendlyMessage {
     var photoUrl: String? = null
     var imageUrl: String? = null
 
-    // Empty constructor needed for ProGuard
+    // Empty constructor needed for Firestore serialization
     constructor()
 
-    // This constructor is needed to create an instance from a Java class
     constructor(text: String?, name: String?, photoUrl: String?, imageUrl: String?) {
         this.text = text
         this.name = name
