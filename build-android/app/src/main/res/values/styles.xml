@@ -5,6 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:colorButtonNormal">@drawable/button_selector</item>
         <item name="colorButtonNormal">@drawable/button_selector</item>
@@ -12,7 +13,7 @@
     </style>
 
     <style name="FriendlyButtonStyle" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorTitle</item>
 
     </style>
 </resources>

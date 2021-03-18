@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:background="@drawable/rounded_message"
+        android:background="@drawable/rounded_message_gray"
         android:padding="10dp"
         android:textColor="@color/colorBlack"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -51,50 +51,5 @@
         app:layout_constraintStart_toStartOf="@id/messageTextView"
         app:layout_constraintTop_toBottomOf="@id/messageTextView"
         tools:text="Joe Schmo" />
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/messengerSelfImageView"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:layout_marginBottom="16dp"
-        android:src="@drawable/ic_account_circle_black_36dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/messageSelfTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:textColor="@color/colorWhite"
-        android:background="@drawable/rounded_self_message"
-        android:padding="10dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        app:layout_constraintEnd_toStartOf="@id/messengerSelfImageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/messageSelfImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:adjustViewBounds="true"
-        android:maxWidth="300dp"
-        android:maxHeight="200dp"
-        android:padding="10dp"
-        android:scaleType="fitCenter"
-        tools:src="@drawable/common_full_open_on_phone"
-        app:layout_constraintEnd_toStartOf="@id/messengerSelfImageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/messengerSelfTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="10dp"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        app:layout_constraintEnd_toEndOf="@id/messageSelfTextView"
-        app:layout_constraintTop_toBottomOf="@id/messageSelfTextView"
-        tools:text="Me" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

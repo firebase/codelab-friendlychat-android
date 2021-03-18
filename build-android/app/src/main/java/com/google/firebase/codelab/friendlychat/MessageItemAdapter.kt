@@ -15,12 +15,15 @@
  */
 package com.google.firebase.codelab.friendlychat
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.firebase.ui.database.FirebaseRecyclerAdapter
@@ -56,66 +59,55 @@ class MessageItemAdapter(
         position: Int,
         model: FriendlyMessage
     ) {
-        var senderIsUser =
-            model.name != ANONYMOUS && currentUserName == model.name && model.name != null
-        holder.bind(model, senderIsUser)
+        holder.bind(model)
     }
 
     inner class MessageItemViewHolder(private val binding: ItemMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: FriendlyMessage, senderIsUser: Boolean) {
-            val textView =
-                if (senderIsUser) binding.messageSelfTextView else binding.messageTextView
-            val imageView =
-                if (senderIsUser) binding.messageSelfImageView else binding.messageImageView
-
-            showMessageView(item, senderIsUser)
-            showMessengerViews(item, senderIsUser)
-
-            if (item.text != null) {
-                textView.text = item.text
-                setMessengerNameConstraintParams(textView, senderIsUser)
-            } else if (item.imageUrl != null) {
-                loadImageIntoView(imageView, item.imageUrl)
-                setMessengerNameConstraintParams(imageView, senderIsUser)
-            }
-        }
-
-        private fun showMessageView(item: FriendlyMessage, senderIsUser: Boolean) {
-            binding.messengerSelfImageView.visibility =
-                if (senderIsUser) View.VISIBLE else View.GONE
-            binding.messengerSelfTextView.visibility = if (senderIsUser) View.VISIBLE else View.GONE
-            binding.messengerTextView.visibility = if (senderIsUser) View.GONE else View.VISIBLE
-            binding.messengerImageView.visibility = if (senderIsUser) View.GONE else View.VISIBLE
+        fun bind(item: FriendlyMessage) {
+            showMessengerViews(item)
 
             if (item.text != null) {
                 binding.messageImageView.visibility = View.GONE
-                binding.messageSelfImageView.visibility = View.GONE
-                binding.messageTextView.visibility = if (senderIsUser) View.GONE else View.VISIBLE
-                binding.messageSelfTextView.visibility =
-                    if (senderIsUser) View.VISIBLE else View.GONE
+                binding.messageTextView.visibility = View.VISIBLE
+                binding.messageTextView.text = item.text
+                setTextColor(item.name, binding.messageTextView)
+                alignNameWithView(binding.messageTextView)
             } else if (item.imageUrl != null) {
                 binding.messageTextView.visibility = View.GONE
-                binding.messageSelfTextView.visibility = View.GONE
-                binding.messageImageView.visibility = if (senderIsUser) View.GONE else View.VISIBLE
-                binding.messageSelfImageView.visibility =
-                    if (senderIsUser) View.VISIBLE else View.GONE
+                binding.messageImageView.visibility = View.VISIBLE
+                loadImageIntoView(binding.messageImageView, item.imageUrl)
+                alignNameWithView(binding.messageImageView)
             }
         }
 
-        private fun showMessengerViews(item: FriendlyMessage, senderIsUser: Boolean) {
-            val textView =
-                if (senderIsUser) binding.messengerSelfTextView else binding.messengerTextView
-            val imageView =
-                if (senderIsUser) binding.messengerSelfImageView else binding.messengerImageView
-
-            textView.text = if (item.name == null) ANONYMOUS else item.name
-
+        private fun showMessengerViews(item: FriendlyMessage) {
+            binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
             if (item.photoUrl != null) {
-                loadImageIntoView(imageView, item.photoUrl)
+                loadImageIntoView(binding.messengerImageView, item.photoUrl)
             } else {
-                imageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
+                binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
             }
+        }
+
+        private fun setTextColor(userName: String?, textView: TextView) {
+            if (userName != ANONYMOUS && currentUserName == userName && userName != null) {
+                textView.setBackgroundResource(R.drawable.rounded_message_blue)
+                textView.setTextColor(Color.WHITE)
+            } else {
+                textView.setBackgroundResource(R.drawable.rounded_message_gray)
+                textView.setTextColor(Color.BLACK)
+            }
+        }
+
+        // Since message is either an image or text, we need to set the messenger name view
+        // to appear under whichever view (imageView or textView) is showing
+        private fun alignNameWithView(view: View) {
+            val params =
+                binding.messengerTextView.layoutParams as ConstraintLayout.LayoutParams
+            params.startToStart = view.id
+            params.topToBottom = view.id
+            binding.messengerTextView.requestLayout()
         }
 
         private fun loadImageIntoView(view: ImageView, url: String?) {
@@ -139,23 +131,6 @@ class MessageItemAdapter(
                 Glide.with(view.context)
                     .load(url)
                     .into(view)
-            }
-        }
-
-        // Since message is either an image or text, we need to set the messenger name view
-        // to appear under whichever view (imageView or textView) is showing
-        private fun setMessengerNameConstraintParams(view: View, senderIsUser: Boolean) {
-            if (senderIsUser) {
-                val params =
-                    binding.messengerSelfTextView.layoutParams as ConstraintLayout.LayoutParams
-                params.endToEnd = view.id
-                params.topToBottom = view.id
-                binding.messengerSelfTextView.requestLayout()
-            } else {
-                val params = binding.messengerTextView.layoutParams as ConstraintLayout.LayoutParams
-                params.startToStart = view.id
-                params.topToBottom = view.id
-                binding.messengerTextView.requestLayout()
             }
         }
     }
