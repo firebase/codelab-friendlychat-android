@@ -6,14 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.google.firebase.codelab.friendlychat.MainActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/messageRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorWhite"
-        android:layout_above="@+id/linearLayout"
-        android:paddingHorizontal="16dp" />
-
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -34,21 +26,21 @@
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:layout_gravity="center"
+            android:padding="10dp"
             android:background="@drawable/edit_text_shadow"
             android:hint="Say something..."
-            android:inputType="text"
-            android:padding="10dp" />
+            android:inputType="text" />
 
         <ImageView
             android:id="@+id/sendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/outline_send_gray_24"
-            android:enabled="false" />
+            android:enabled="false"
+            android:src="@drawable/outline_send_gray_24" />
 
     </LinearLayout>
 
@@ -59,4 +51,12 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/messageRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linearLayout"
+        android:background="@android:color/white"
+        android:paddingHorizontal="16dp" />
 </RelativeLayout>

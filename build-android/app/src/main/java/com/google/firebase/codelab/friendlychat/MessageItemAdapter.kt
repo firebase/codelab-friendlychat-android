@@ -65,22 +65,27 @@ class MessageItemAdapter(
     inner class MessageItemViewHolder(private val binding: ItemMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(item: FriendlyMessage) {
+            val textView = binding.messageTextView
+            val imageView = binding.messageImageView
+
             showMessengerViews(item)
 
+            // Display either the FriendlyMessage text or image
             if (item.text != null) {
-                binding.messageImageView.visibility = View.GONE
-                binding.messageTextView.visibility = View.VISIBLE
-                binding.messageTextView.text = item.text
-                setTextColor(item.name, binding.messageTextView)
-                alignNameWithView(binding.messageTextView)
+                imageView.visibility = View.GONE
+                textView.visibility = View.VISIBLE
+                textView.text = item.text
+                setTextColor(item.name, textView)
+                alignNameWithView(textView)
             } else if (item.imageUrl != null) {
-                binding.messageTextView.visibility = View.GONE
-                binding.messageImageView.visibility = View.VISIBLE
-                loadImageIntoView(binding.messageImageView, item.imageUrl)
-                alignNameWithView(binding.messageImageView)
+                textView.visibility = View.GONE
+                imageView.visibility = View.VISIBLE
+                loadImageIntoView(imageView, item.imageUrl)
+                alignNameWithView(imageView)
             }
         }
 
+        // Display user's name and profile image if available
         private fun showMessengerViews(item: FriendlyMessage) {
             binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
             if (item.photoUrl != null) {
@@ -100,8 +105,8 @@ class MessageItemAdapter(
             }
         }
 
-        // Since message is either an image or text, we need to set the messenger name view
-        // to appear under whichever view (imageView or textView) is showing
+        // Since the FriendlyMessage is either an image or text, we need to set the user's name
+        // to align under whichever view (imageView or textView) is showing
         private fun alignNameWithView(view: View) {
             val params =
                 binding.messengerTextView.layoutParams as ConstraintLayout.LayoutParams
