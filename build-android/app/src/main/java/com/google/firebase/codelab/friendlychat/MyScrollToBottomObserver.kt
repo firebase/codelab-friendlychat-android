@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 
 class MyScrollToBottomObserver(
     private val recycler: RecyclerView,
-    private val adapter: MessageItemAdapter,
+    private val adapter: FriendlyMessageAdapter,
     private val manager: LinearLayoutManager
 ) : AdapterDataObserver() {
     override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {

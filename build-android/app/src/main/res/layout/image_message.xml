@@ -17,20 +17,8 @@
         android:maxWidth="300dp"
         android:scaleType="fitCenter"
         app:layout_constraintStart_toEndOf="@id/messengerImageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:padding="10dp"
-        android:background="@drawable/rounded_message_gray"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toEndOf="@id/messengerImageView"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="This is a message" />
+        tools:srcCompat="@android:drawable/ic_menu_gallery" />
 
     <TextView
         android:id="@+id/messengerTextView"
@@ -38,8 +26,8 @@
         android:layout_height="wrap_content"
         android:paddingHorizontal="10dp"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        app:layout_constraintStart_toStartOf="@id/messageTextView"
-        app:layout_constraintTop_toBottomOf="@id/messageTextView"
+        app:layout_constraintStart_toStartOf="@id/messageImageView"
+        app:layout_constraintTop_toBottomOf="@id/messageImageView"
         tools:text="FirstName LastName" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -49,7 +37,7 @@
         android:layout_marginBottom="15dp"
         android:src="@drawable/ic_account_circle_black_36dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/messageTextView"
+        app:layout_constraintEnd_toStartOf="@id/messageImageView"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
