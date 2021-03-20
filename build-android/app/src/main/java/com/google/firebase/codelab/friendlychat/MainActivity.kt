@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     // Firebase instance variables
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
-    private lateinit var adapter: MessageItemAdapter
+    private lateinit var adapter: FriendlyMessageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         val options = FirebaseRecyclerOptions.Builder<FriendlyMessage>()
             .setQuery(messagesRef, FriendlyMessage::class.java)
             .build()
-        adapter = MessageItemAdapter(options)
+        adapter = FriendlyMessageAdapter(options, userName)
         binding.progressBar.visibility = ProgressBar.INVISIBLE
         manager = LinearLayoutManager(this)
         manager.stackFromEnd = true
