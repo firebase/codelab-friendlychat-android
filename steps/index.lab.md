@@ -25,15 +25,15 @@ Welcome to the Friendly Chat codelab. In this codelab, you'll learn how to use t
 
 #### What you'll learn
 
-* Allow users to sign in.
-* Sync data using the Firebase Realtime Database.
-* Store binary files in Firebase 
+* How to use Firebase Authentication to allow users to sign in.
+* How to sync data using the Firebase Realtime Database.
+* How to store binary files in Firebase Storage.
 
 #### What you'll need
 
 *  [Android Studio](https://developer.android.com/studio) version 4.0+.
 * An Android device or [Emulator](https://developer.android.com/studio/run/emulator#install) with Android 4.4+.
-
+* Familiarity with the Kotlin programming language.
 
 ## Get the sample code
 Duration: 05:00
@@ -78,7 +78,7 @@ buildscript {
 
         // The google-services plugin is required to parse the google-services.json file
         classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.4.1'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
     }
 }
 ```
@@ -86,8 +86,11 @@ buildscript {
 **app/build.gradle**
 
 ```groovy
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.crashlytics'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.firebase.crashlytics'
+}
 
 android {
     // ...
@@ -100,10 +103,10 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
 
     // Firebase SDK
-    implementation platform('com.google.firebase:firebase-bom:26.4.0')
-    implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-storage'
-    implementation 'com.google.firebase:firebase-auth'
+    implementation platform('com.google.firebase:firebase-bom:26.6.0')
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Firebase UI Library
     implementation 'com.firebaseui:firebase-ui-database:7.1.1'
@@ -215,65 +218,58 @@ Next we'll add some basic Firebase Authentication code to the app to detect user
 
 #### Check for current user
 
-First add the following instance variables to `MainActivity.java`:
+First add the following instance variable to `MainActivity.kt`:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
 // Firebase instance variables
-private FirebaseAuth mFirebaseAuth;
+private lateinit var auth: FirebaseAuth
 ```
 
-Now let's modify `MainActivity.java` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate` method **after** `mUsername` has been initialized:
+Now let's modify `MainActivity.kt` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate` method **after** the `binding` is attached to the view:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
 // Initialize Firebase Auth and check if the user is signed in
-mFirebaseAuth = FirebaseAuth.getInstance();
-if (mFirebaseAuth.getCurrentUser() == null) {
+auth = Firebase.auth
+if (auth.currentUser == null) {
     // Not signed in, launch the Sign In activity
-    startActivity(new Intent(this, SignInActivity.class));
-    finish();
-    return;
+    startActivity(Intent(this, SignInActivity::class.java))
+    finish()
+    return
 }
 ```
 
-Then implement the `getUserPhotoUrl()` amd `getUserName()` methods to return the appropriate information about the currently authenticated Firebase user:
+Then implement the `getUserPhotoUrl()` and `getUserName()` methods to return the appropriate information about the currently authenticated Firebase user:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
-@Nullable
-private String getUserPhotoUrl() {
-    FirebaseUser user = mFirebaseAuth.getCurrentUser();
-    if (user != null && user.getPhotoUrl() != null) {
-        return user.getPhotoUrl().toString();
-    }
-
-    return null;
+private fun getPhotoUrl(): String? {
+    val user = auth.currentUser
+    return user?.photoUrl?.toString()
 }
 
-private String getUserName() {
-    FirebaseUser user = mFirebaseAuth.getCurrentUser();
-    if (user != null) {
-        return user.getDisplayName();
-    }
-
-    return ANONYMOUS;
+private fun getUserName(): String? {
+    val user = auth.currentUser
+    return if (user != null) {
+        user.displayName
+    } else ANONYMOUS
 }
 ```
 
 Then implement the `signOut()` method to handle the sign out button:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
-private void signOut() {
-    mFirebaseAuth.signOut();
-    mSignInClient.signOut();
-    startActivity(new Intent(this, SignInActivity.class));
-    finish();
+private fun signOut() {
+    auth.signOut()
+    signInClient.signOut()
+    startActivity(Intent(this, SignInActivity::class.java))
+    finish()
 }
 ```
 
@@ -281,56 +277,55 @@ Now we have all of the logic in place to send the user to the sign-in screen whe
 
 #### Implement the Sign-In screen
 
-Open the file `SignInActivity.java`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to Sign-In with Google, and then use that Google account to authenticate with Firebase.
+Open the file `SignInActivity.kt`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to Sign-In with Google, and then use that Google account to authenticate with Firebase.
 
 Add an Auth instance variable in the `SignInActivity` class under the `// Firebase instance variables` comment:
 
-**SignInActivity.java**
+**SignInActivity.kt**
 
 ```
 // Firebase instance variables
-private FirebaseAuth mFirebaseAuth;
+private lateinit var auth: FirebaseAuth
 ```
 
 Then, edit the `onCreate()` method to initialize Firebase in the same way you did in `MainActivity`:
 
-**SignInActivity.java**
+**SignInActivity.kt**
 
 ```
 // Initialize FirebaseAuth
-mFirebaseAuth = FirebaseAuth.getInstance();
+auth = Firebase.auth
 ```
 
 Next, initiate signing in with Google. Update `SignInActivity` `signIn()` method to look like this:
 
-**SignInActivity.java**
+**SignInActivity.kt**
 
 ```
-private void signIn() {
-    Intent signInIntent = mSignInClient.getSignInIntent();
-    startActivityForResult(signInIntent, RC_SIGN_IN);
+private fun signIn() {
+    val signInIntent = signInClient.signInIntent
+    startActivityForResult(signInIntent, RC_SIGN_IN)
 }
 ```
 
 Next, implement the `onActivityResult` method to `SignInActivity` to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase:
 
-**SignInActivity.java**
+**SignInActivity.kt**
 
 ```
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
 
     // Result returned from launching the Intent in signIn()
     if (requestCode == RC_SIGN_IN) {
-        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
             // Google Sign In was successful, authenticate with Firebase
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            firebaseAuthWithGoogle(account);
-        } catch (ApiException e) {
+            val account = task.getResult(ApiException::class.java)
+            firebaseAuthWithGoogle(account)
+        } catch (e: ApiException) {
             // Google Sign In failed, update UI appropriately
-            Log.w(TAG, "Google sign in failed", e);
+            Log.w(TAG, "Google sign in failed", e)
         }
     }
 }
@@ -341,29 +336,24 @@ Implement the `firebaseAuthWithGoogle` method to authenticate with the signed in
 **SignInActivity.java**
 
 ```
-private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-    Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-    AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-    mFirebaseAuth.signInWithCredential(credential)
-            .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
-                @Override
-                public void onSuccess(AuthResult authResult) {
-                    // If sign in succeeds the auth state listener will be notified and logic to 
-                    // handle the signed in user can be handled in the listener.
-                    Log.d(TAG, "signInWithCredential:success");
-                    startActivity(new Intent(SignInActivity.this, MainActivity.class));
-                    finish();
-                }
-            })
-            .addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithCredential", e);
-                    Toast.makeText(SignInActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            });
+private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
+    Log.d(TAG, "firebaseAuthWithGoogle:" + acct?.id)
+    val credential = GoogleAuthProvider.getCredential(acct?.idToken, null)
+    auth.signInWithCredential(credential)
+        .addOnSuccessListener(this) {
+            // If sign in succeeds the auth state listener will be notified and logic to
+            // handle the signed in user can be handled in the listener.
+            Log.d(TAG, "signInWithCredential:success")
+            startActivity(Intent(this@SignInActivity, MainActivity::class.java))
+            finish()
+        }
+        .addOnFailureListener(this) { e -> // If sign in fails, display a message to the user.
+            Log.w(TAG, "signInWithCredential", e)
+            Toast.makeText(
+                this@SignInActivity, "Authentication failed.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 }
 ```
 
