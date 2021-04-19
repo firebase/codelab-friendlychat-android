@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         val options = FirebaseRecyclerOptions.Builder<FriendlyMessage>()
             .setQuery(messagesRef, FriendlyMessage::class.java)
             .build()
-        adapter = FriendlyMessageAdapter(options, userName)
+        adapter = FriendlyMessageAdapter(options, getUserName())
         binding.progressBar.visibility = ProgressBar.INVISIBLE
         manager = LinearLayoutManager(this)
         manager.stackFromEnd = true
@@ -102,8 +102,8 @@ class MainActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val friendlyMessage = FriendlyMessage(
                 binding.messageEditText.text.toString(),
-                userName,
-                userPhotoUrl,
+                getUserName(),
+                getPhotoUrl(),
                 null
             )
             db.reference.child(MESSAGES_CHILD).push().setValue(friendlyMessage)
@@ -164,13 +164,15 @@ class MainActivity : AppCompatActivity() {
                 val uri = data.data
                 Log.d(TAG, "Uri: " + uri.toString())
                 val user = auth.currentUser
-                val tempMessage = FriendlyMessage(null, userName, userPhotoUrl, LOADING_IMAGE_URL)
+                val tempMessage =
+                    FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
                 db.reference.child(MESSAGES_CHILD).push()
-                    .setValue(tempMessage,
-                              DatabaseReference.CompletionListener { databaseError, databaseReference ->
-                                  if (databaseError != null) {
-                                      Log.w(
-                                          TAG, "Unable to write message to database.",
+                    .setValue(
+                        tempMessage,
+                        DatabaseReference.CompletionListener { databaseError, databaseReference ->
+                            if (databaseError != null) {
+                                Log.w(
+                                    TAG, "Unable to write message to database.",
                                           databaseError.toException()
                                       )
                                       return@CompletionListener
@@ -198,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 taskSnapshot.metadata!!.reference!!.downloadUrl
                     .addOnSuccessListener { uri ->
                         val friendlyMessage =
-                            FriendlyMessage(null, userName, userPhotoUrl, uri.toString())
+                            FriendlyMessage(null, getUserName(), getPhotoUrl(), uri.toString())
                         db.reference
                             .child(MESSAGES_CHILD)
                             .child(key!!)
@@ -221,19 +223,17 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private val userPhotoUrl: String?
-        get() {
-            val user = auth.currentUser
-            return user?.photoUrl?.toString()
-        }
+    private fun getPhotoUrl(): String? {
+        val user = auth.currentUser
+        return user?.photoUrl?.toString()
+    }
 
-    private val userName: String?
-        get() {
-            val user = auth.currentUser
-            return if (user != null) {
-                user.displayName
-            } else ANONYMOUS
-        }
+    private fun getUserName(): String? {
+        val user = auth.currentUser
+        return if (user != null) {
+            user.displayName
+        } else ANONYMOUS
+    }
 
     companion object {
         private const val TAG = "MainActivity"
