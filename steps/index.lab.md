@@ -17,7 +17,7 @@ feedback link: https://github.com/firebase/codelab-friendlychat-android/issues
 Duration: 05:00
 
 
-<img src="img/screenshot.png" alt="screenshot"  width="173.00" />
+<img src="img/screenshot.png" alt="screenshot"  width="300.00" />
 
 Image: Working Friendly Chat app.
 
@@ -60,7 +60,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 
 In Android Studio click **File** > **Open** and  select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
 
-You should now have the `build-android-start project` open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in the next step.
+You should now have the `build-android-start` project open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in the next step.
 
 
 ### Check Dependencies
@@ -218,7 +218,7 @@ Next we'll add some basic Firebase Authentication code to the app to detect user
 
 #### Check for current user
 
-First add the following instance variable to `MainActivity.kt`:
+First add the following instance variable to the `MainActivity.kt` class:
 
 **MainActivity.kt**
 
@@ -227,7 +227,7 @@ First add the following instance variable to `MainActivity.kt`:
 private lateinit var auth: FirebaseAuth
 ```
 
-Now let's modify `MainActivity.kt` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate` method **after** the `binding` is attached to the view:
+Now let's modify `MainActivity` to send the user to the sign-in screen whenever they open the app and are unauthenticated.  Add the following to the `onCreate()` method **after** the `binding` is attached to the view:
 
 **MainActivity.kt**
 
@@ -239,6 +239,23 @@ if (auth.currentUser == null) {
     startActivity(Intent(this, SignInActivity::class.java))
     finish()
     return
+}
+```
+
+We also want to check if the user is signed in during `onStart()`:
+
+**MainActivity.kt**
+
+```
+public override fun onStart() {
+    super.onStart()
+    // Check if user is signed in.
+    if (auth.currentUser == null) {
+        // Not signed in, launch the Sign In activity
+        startActivity(Intent(this, SignInActivity::class.java))
+        finish()
+        return
+    }
 }
 ```
 
@@ -297,7 +314,7 @@ Then, edit the `onCreate()` method to initialize Firebase in the same way you di
 auth = Firebase.auth
 ```
 
-Next, initiate signing in with Google. Update `SignInActivity` `signIn()` method to look like this:
+Next, initiate signing in with Google. Update `signIn()` method to look like this:
 
 **SignInActivity.kt**
 
@@ -308,7 +325,7 @@ private fun signIn() {
 }
 ```
 
-Next, implement the `onActivityResult` method to `SignInActivity` to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase:
+Next, implement the `onActivityResult()` method to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase:
 
 **SignInActivity.kt**
 
@@ -331,9 +348,9 @@ public override fun onActivityResult(requestCode: Int, resultCode: Int, data: In
 }
 ```
 
-Implement the `firebaseAuthWithGoogle` method to authenticate with the signed in Google account:
+Implement the `firebaseAuthWithGoogle()` method to authenticate with the signed in Google account:
 
-**SignInActivity.java**
+**SignInActivity.kt**
 
 ```
 private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
@@ -388,116 +405,98 @@ In this section we add code that synchronizes newly added messages to the app UI
 * Updating the `RecyclerView` adapter so new messages will be shown.
 * Adding the Database instance variables with your other Firebase instance variables in the `MainActivity` class:
 
-#### MainActivity.java
+#### MainActivity.kt
 
 ```
 // Firebase instance variables
 // ...
-private FirebaseDatabase mDatabase;
-private FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder> mFirebaseAdapter;
+private lateinit var db: FirebaseDatabase
+private lateinit var adapter: FriendlyMessageAdapter
 ```
 
-Modify your MainActivity's `onCreate` method by replacing *`mProgressBar.setVisibility(ProgressBar.INVISIBLE);`* with the code defined below. This code initially adds all existing messages and then listens for new child entries under the messages path in your Firebase Realtime Database. It adds a new element to the UI for each message:
+Modify your MainActivity's `onCreate()` method under the comment `// Initialize Realtime Database and FirebaseRecyclerAdapter` with the code defined below. This code adds all existing messages from Realtime Database and then listens for new child entries under the `messages` path in your Firebase Realtime Database. It adds a new element to the UI for each message:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
 // Initialize Realtime Database
-mDatabase = FirebaseDatabase.getInstance();
-DatabaseReference messagesRef = mDatabase.getReference().child(MESSAGES_CHILD);
+db = Firebase.database
+val messagesRef = db.reference.child(MESSAGES_CHILD)
 
-// The FirebaseRecyclerAdapter class comes from the FirebaseUI library
+// The FirebaseRecyclerAdapter class and options come from the FirebaseUI library
 // See: https://github.com/firebase/FirebaseUI-Android
-FirebaseRecyclerOptions<FriendlyMessage> options =
-        new FirebaseRecyclerOptions.Builder<FriendlyMessage>()
-                .setQuery(messagesRef, FriendlyMessage.class)
-                .build();
-
-mFirebaseAdapter = new FirebaseRecyclerAdapter<FriendlyMessage, MessageViewHolder>(options) {
-    @Override
-    public MessageViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
-        return new MessageViewHolder(inflater.inflate(R.layout.item_message, viewGroup, false));
-    }
-
-    @Override
-    protected void onBindViewHolder(MessageViewHolder vh, int position, FriendlyMessage message) {
-        mBinding.progressBar.setVisibility(ProgressBar.INVISIBLE);
-        vh.bindMessage(message);
-    }
-};
-
-mLinearLayoutManager = new LinearLayoutManager(this);
-mLinearLayoutManager.setStackFromEnd(true);
-mBinding.messageRecyclerView.setLayoutManager(mLinearLayoutManager);
-mBinding.messageRecyclerView.setAdapter(mFirebaseAdapter);
+val options = FirebaseRecyclerOptions.Builder<FriendlyMessage>()
+    .setQuery(messagesRef, FriendlyMessage::class.java)
+    .build()
+adapter = FriendlyMessageAdapter(options, getUserName())
+binding.progressBar.visibility = ProgressBar.INVISIBLE
+manager = LinearLayoutManager(this)
+manager.stackFromEnd = true
+binding.messageRecyclerView.layoutManager = manager
+binding.messageRecyclerView.adapter = adapter
 
 // Scroll down when a new message arrives
-// See MyScrollToBottomObserver.java for details
-mFirebaseAdapter.registerAdapterDataObserver(
-        new MyScrollToBottomObserver(mBinding.messageRecyclerView, mFirebaseAdapter, mLinearLayoutManager));
+// See MyScrollToBottomObserver for details
+adapter.registerAdapterDataObserver(
+    MyScrollToBottomObserver(binding.messageRecyclerView, adapter, manager)
+)
 ```
 
-Next in the `MessageViewHolder` class implement the `bindMessage()` method:
+Next in the `FriendlyMessageAdapter.kt` class implement the `bind()` method within the inner class `MessageViewHolder()`:
 
-**MessageViewHolder.java**
+**FriendlyMessageAdapter.kt**
 
 ```
-public void bindMessage(FriendlyMessage friendlyMessage) {
-    if (friendlyMessage.getText() != null) {
-        messageTextView.setText(friendlyMessage.getText());
-        messageTextView.setVisibility(TextView.VISIBLE);
-        messageImageView.setVisibility(ImageView.GONE);
-    } else if (friendlyMessage.getImageUrl() != null) {
-        String imageUrl = friendlyMessage.getImageUrl();
-        if (imageUrl.startsWith("gs://")) {
-            StorageReference storageReference = FirebaseStorage.getInstance()
-                    .getReferenceFromUrl(imageUrl);
+inner class MessageViewHolder(private val binding: MessageBinding) : ViewHolder(binding.root) {
+    fun bind(item: FriendlyMessage) {
+        binding.messageTextView.text = item.text
+        setTextColor(item.name, binding.messageTextView)
 
-            storageReference.getDownloadUrl()
-                    .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            String downloadUrl = uri.toString();
-                            Glide.with(messageImageView.getContext())
-                                    .load(downloadUrl)
-                                    .into(messageImageView);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.w(TAG, "Getting download url was not successful.", e);
-                        }
-                    });
+        binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
+        if (item.photoUrl != null) {
+            loadImageIntoView(binding.messengerImageView, item.photoUrl!!)
         } else {
-            Glide.with(messageImageView.getContext())
-                    .load(friendlyMessage.getImageUrl())
-                    .into(messageImageView);
+            binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
         }
+    }
+    ...
+}
+```
 
-        messageImageView.setVisibility(ImageView.VISIBLE);
-        messageTextView.setVisibility(TextView.GONE);
+We also need to display messages that are images, so also implement the `bind()` method within the inner class `ImageMessageViewHolder()`:
+
+**FriendlyMessageAdapter.kt**
+
+```
+inner class ImageMessageViewHolder(private val binding: ImageMessageBinding) :
+    ViewHolder(binding.root) {
+    fun bind(item: FriendlyMessage) {
+        loadImageIntoView(binding.messageImageView, item.imageUrl!!)
+
+        binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
+        if (item.photoUrl != null) {
+            loadImageIntoView(binding.messengerImageView, item.photoUrl!!)
+        } else {
+            binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
+        }
     }
 }
 ```
 
-Finally, back in `MainActivity`,start and stop listening for updates from Firebase Realtime Database. 
-Update the *`onPause`* and *`onResume`* methods in `MainActivity` as shown below:
+Finally, back in `MainActivity`, start and stop listening for updates from Firebase Realtime Database. 
+Update the *`onPause()`* and *`onResume()`* methods in `MainActivity` as shown below:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
-@Override
-public void onPause() {
-    mFirebaseAdapter.stopListening();
-    super.onPause();
+public override fun onPause() {
+    adapter.stopListening()
+    super.onPause()
 }
 
-@Override
-public void onResume() {
-    super.onResume();
-    mFirebaseAdapter.startListening();
+public override fun onResume() {
+    super.onResume()
+    adapter.startListening()
 }
 ```
 
@@ -519,30 +518,27 @@ Duration: 05:00
 
 In this section, you will add the ability for app users to send text messages. The code snippet below listens for click events on the send button, creates a new `FriendlyMessage` object with the contents of the message field, and pushes the message to the database.  The `push()` method adds an automatically generated ID to the pushed object's path.  These IDs are sequential which ensures that the new messages will be added to the end of the list.  
 
-Update the click listener of the send button in the `onCreate` method in the `MainActivity` class. 
-This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
+Update the click listener of the send button in the `onCreate()` method in the `MainActivity` class. 
+This code is at the bottom of the `onCreate()` method already. Update the `onClick()` body to match the code below:
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
 // Disable the send button when there's no text in the input field
-// See MyButtonObserver.java for details
-mBinding.messageEditText.addTextChangedListener(new MyButtonObserver(mBinding.sendButton));
+// See MyButtonObserver for details
+binding.messageEditText.addTextChangedListener(MyButtonObserver(binding.sendButton))
 
 // When the send button is clicked, send a text message
-mBinding.sendButton.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        FriendlyMessage friendlyMessage = new
-                FriendlyMessage(mBinding.messageEditText.getText().toString(),
-                getUserName(),
-                getUserPhotoUrl(),
-                null /* no image */);
-
-        mDatabase.getReference().child(MESSAGES_CHILD).push().setValue(friendlyMessage);
-        mBinding.messageEditText.setText("");
-    }
-});
+binding.sendButton.setOnClickListener {
+    val friendlyMessage = FriendlyMessage(
+        binding.messageEditText.text.toString(),
+        getUserName(),
+        getPhotoUrl(),
+        null /* no image */
+    )
+    db.reference.child(MESSAGES_CHILD).push().setValue(friendlyMessage)
+    binding.messageEditText.setText("")
+}
 ```
 
 ### Implement image message sending
@@ -561,66 +557,43 @@ To add images this codelab uses Cloud Storage for Firebase. Cloud Storage is a g
 
 In the Firebase console select **Storage** in the left navigation panel. Then click **Get Started** to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.
 
-With the following code snippet you will allow the user to select an image from the device's local storage. Update the click listener of `addMessageImageView` in the `onCreate` method in the `MainActivity` class. This code is at the bottom of the `onCreate` method already. Update the `onClick` body to match the code below:
-
-#### MainActivity.java
-
-```
-// When the image button is clicked, launch the image picker
-mBinding.addMessageImageView.setOnClickListener(new View.OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/*");
-        startActivityForResult(intent, REQUEST_IMAGE);
-    }
-});
-```
-
 ##### Handle image selection and write temp message
 
-Once the user has selected an image, a call to the `MainActivity`'s `onActivityResult` will be fired. This is where you handle the user's image selection. Using the code snippet below, add the `onActivityResult` method to `MainActivity`. In this function you will write a message with a temporary image url to the database indicating the image is being uploaded.
+Once the user has selected an image, `startActivityForResult()` is called. This is already implemented in the code at the end of the `onCreate()` method. It launches the `MainActivity`'s `onActivityResult()` method. Using the code snippet below, you will write a message with a temporary image url to the database indicating the image is being uploaded.
 
-**MainActivity.java**
+**MainActivity.kt**
 
 ```
-@Override
-protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
-
+override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
     if (requestCode == REQUEST_IMAGE) {
         if (resultCode == RESULT_OK && data != null) {
-            final Uri uri = data.getData();
-            Log.d(TAG, "Uri: " + uri.toString());
+            val uri = data.data
+            Log.d(TAG, "Uri: " + uri.toString())
+            val user = auth.currentUser
+            val tempMessage =
+                FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
+            db.reference.child(MESSAGES_CHILD).push()
+                .setValue(
+                    tempMessage,
+                    DatabaseReference.CompletionListener { databaseError, databaseReference ->
+                        if (databaseError != null) {
+                            Log.w(
+                                TAG, "Unable to write message to database.",
+                                        databaseError.toException()
+                                    )
+                                    return@CompletionListener
+                                }
 
-            final FirebaseUser user = mFirebaseAuth.getCurrentUser();
-            FriendlyMessage tempMessage = new FriendlyMessage(
-                    null, getUserName(), getUserPhotoUrl(), LOADING_IMAGE_URL);
-
-            mDatabase.getReference().child(MESSAGES_CHILD).push()
-                    .setValue(tempMessage, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError,
-                                               DatabaseReference databaseReference) {
-                            if (databaseError != null) {
-                                Log.w(TAG, "Unable to write message to database.",
-                                        databaseError.toException());
-                                return;
-                            }
-
-                            // Build a StorageReference and then upload the file
-                            String key = databaseReference.getKey();
-                            StorageReference storageReference =
-                                    FirebaseStorage.getInstance()
-                                            .getReference(user.getUid())
-                                            .child(key)
-                                            .child(uri.getLastPathSegment());
-
-                            putImageInStorage(storageReference, uri, key);
-                        }
-                    });
+                                // Build a StorageReference and then upload the file
+                                val key = databaseReference.key
+                                val storageReference = Firebase.storage
+                                    .getReference(user!!.uid)
+                                    .child(key!!)
+                                    .child(uri!!.lastPathSegment!!)
+                                putImageInStorage(storageReference, uri, key)
+                            })
         }
     }
 }
@@ -628,39 +601,35 @@ protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 #### Upload image and update message
 
-Add the method `putImageInStorage` to `MainActivity`. It is called in `onActivityResult` to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image. 
+Add the method `putImageInStorage()` to `MainActivity`. It is called in `onActivityResult()` to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image. 
 
-#### MainActivity.java
+#### MainActivity.kt
 
 ```
-private void putImageInStorage(StorageReference storageReference, Uri uri, final String key) {
+private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key: String?) {
     // First upload the image to Cloud Storage
     storageReference.putFile(uri)
-            .addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    // After the image loads, get a public downloadUrl for the image
-                    // and add it to the message.
-                    taskSnapshot.getMetadata().getReference().getDownloadUrl()
-                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    FriendlyMessage friendlyMessage = new FriendlyMessage(
-                                            null, getUserName(), getUserPhotoUrl(), uri.toString());
-                                    mDatabase.getReference()
-                                            .child(MESSAGES_CHILD)
-                                            .child(key)
-                                            .setValue(friendlyMessage);
-                                }
-                            });
+        .addOnSuccessListener(
+            this
+        ) { taskSnapshot -> // After the image loads, get a public downloadUrl for the image
+            // and add it to the message.
+            taskSnapshot.metadata!!.reference!!.downloadUrl
+                .addOnSuccessListener { uri ->
+                    val friendlyMessage =
+                        FriendlyMessage(null, getUserName(), getPhotoUrl(), uri.toString())
+                    db.reference
+                        .child(MESSAGES_CHILD)
+                        .child(key!!)
+                        .setValue(friendlyMessage)
                 }
-            })
-            .addOnFailureListener(this, new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Image upload task was not successful.", e);
-                }
-            });
+        }
+        .addOnFailureListener(this) { e ->
+            Log.w(
+                TAG,
+                "Image upload task was unsuccessful.",
+                e
+            )
+        }
 }
 ```
 
@@ -682,5 +651,5 @@ You just built a real-time chat application using Firebase!
 * Firebase Realtime Database
 * Cloud Storage for Firebase
 
-Next try using what you learned to add Firebase to your own Android app! To learn more about Firebae visit [firebase.google.com](https://firebase.google.com)
+Next try using what you learned to add Firebase to your own Android app! To learn more about Firebase visit [firebase.google.com](https://firebase.google.com)
 
