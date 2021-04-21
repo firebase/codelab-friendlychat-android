@@ -4,8 +4,7 @@
 
 This is the source code for the Firebase FriendlyChat codelabs. To get started open the codelab instructions:
 
- - [Build FriendlyChat Codelab](https://codelabs.developers.google.com/codelabs/firebase-android/)
- - [Grow FriendlyChat Codelab](https://codelabs.developers.google.com/codelabs/growfirebase-android)
+ - [Build FriendlyChat Codelab](https://firebase.google.com/codelabs/firebase-android/)
 
 
 ## How to make contributions?
