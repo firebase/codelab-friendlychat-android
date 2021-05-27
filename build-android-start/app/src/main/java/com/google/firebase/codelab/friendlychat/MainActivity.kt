@@ -22,14 +22,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.AuthUI.IdpConfig.*
 import com.google.firebase.codelab.friendlychat.databinding.ActivityMainBinding
 import com.google.firebase.storage.StorageReference
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var signInClient: GoogleSignInClient
     private lateinit var binding: ActivityMainBinding
     private lateinit var manager: LinearLayoutManager
 
@@ -45,12 +43,6 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize Firebase Auth and check if the user is signed in
         // TODO: implement
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        signInClient = GoogleSignIn.getClient(this, gso)
 
         // Initialize Realtime Database and FirebaseRecyclerAdapter
         // TODO: implement

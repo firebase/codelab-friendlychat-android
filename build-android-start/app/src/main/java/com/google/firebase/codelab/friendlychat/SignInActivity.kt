@@ -18,15 +18,12 @@ package com.google.firebase.codelab.friendlychat
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
 import com.google.firebase.codelab.friendlychat.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
-    private lateinit var signInClient: GoogleSignInClient
 
     // Firebase instance variables
     // TODO: implement
@@ -39,18 +36,13 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set click listeners
-        binding.signInButton.setOnClickListener { signIn() }
-
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        signInClient = GoogleSignIn.getClient(this, gso)
-
         // Initialize FirebaseAuth
         // TODO: implement
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        // TODO: Implement
     }
 
     private fun signIn() {
@@ -62,8 +54,9 @@ class SignInActivity : AppCompatActivity() {
         // TODO: implement
     }
 
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
-        // TODO: implement
+    private fun goToMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     companion object {

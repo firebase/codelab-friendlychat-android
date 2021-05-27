@@ -148,8 +148,10 @@ version `9.11.0` or higher:
 firebase --version
 ```
 
-## Run the Emulator Suite
+## Connect to the the Emulator Suite
 Duration: 02:00
+
+### Start the emulators
 
 In your terminal run the following command within the `codelab-friendlychat-android` directory:
 
@@ -192,6 +194,22 @@ browser you should see the Emulator Suite UI:
 <img src="img/emulators-home.png" alt="Emulator Suite UI home" />
 
 Leave the `emulators:start` command running for the rest of the codelab.
+
+### Connect your app
+
+In `MainActivity.kt` add the following code inside the `onCreate` method:
+
+```kotlin
+// When running in debug mode, connect to the Firebase Emulator Suite
+// "10.0.2.2" is a special value which allows the Android emulator to
+// connect to "localhost" on the host computer. The port values are
+// defined in the firebase.json file.
+if (BuildConfig.DEBUG) {
+    Firebase.database.useEmulator("10.0.2.2", 9000)
+    Firebase.auth.useEmulator("10.0.2.2", 9099)
+    Firebase.storage.useEmulator("10.0.2.2", 9199)
+}
+```
 
 ## Run the starter app
 Duration: 03:00
