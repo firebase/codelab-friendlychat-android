@@ -53,7 +53,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android**—Completed code for the finished sample app.
 > 
-> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Step #3](https://codelabs.developers.google.com/codelabs/firebase-android/#2) for the command. Also you will have to enable Google as an Auth Provider; do this in the Authentication section of the Firebase console. 
+> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Step #10](https://codelabs.developers.google.com/codelabs/firebase-android/#9) for more information.
 
 
 ### Import into Android Studio
@@ -214,6 +214,20 @@ if (BuildConfig.DEBUG) {
 ## Run the starter app
 Duration: 03:00
 
+### Add google-services.json
+
+In order for your Android app to connect to Firebase, you must add a `google-services.json` file inside the `app` folder. For the purposes of this codelab we have provided a mock JSON file which will allow you to connect to the Emulator Suite.
+
+Copy the `mock-google-services.json` file into the `build-android-start/app` folder as `google-services.json`:
+
+```shell
+cp mock-google-services.json build-android-start/app/google-services.json
+```
+
+In the final step of this codelab you will learn how to creat a real Firebase project and replace this file with your own configuration.
+
+### Run the app
+
 Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time. 
 
 1. Start your Android device or emulator.
@@ -308,7 +322,7 @@ Now we have all of the logic in place to send the user to the sign-in screen whe
 
 #### Implement the Sign-In screen
 
-Open the file `SignInActivity.kt`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to Sign-In with Google, and then use that Google account to authenticate with Firebase.
+Open the file `SignInActivity.kt`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to sign in with FirebaseUI.
 
 Add an Auth instance variable in the `SignInActivity` class under the `// Firebase instance variables` comment:
 
@@ -357,7 +371,7 @@ public override fun onStart() {
 }
 ```
 
-Next, implement the `onActivityResult()` method to handle the sign in result. If the result of the Google Sign-In was successful, use the account to authenticate with Firebase:
+Next, implement the `onActivityResult()` method to handle the sign in result. If the result of the signin was successful, continue to `MainActivity`:
 
 **SignInActivity.kt**
 
@@ -392,7 +406,7 @@ That's it! You've implemented authentication with FirebaseUI in just a few metho
 
 Run the app on your device. You should be immediately sent to the sign-in screen. Tap the **Sign in with email** button and create an account. You should then be sent to the messaging screen if everything worked well.
 
-**Note**: Google Sign In will not work yet because we have not properly registered the app in the Firebase console. You'll have a chance to do this at the end of the codelab.
+> **Note**: Google Sign In will not work yet because we have not properly registered the app in the Firebase console. You'll have a chance to do this at the end of the codelab.
 
 ## Read Messages
 Duration: 05:00
@@ -431,7 +445,7 @@ Modify your MainActivity's `onCreate()` method under the comment `// Initialize 
 
 **MainActivity.kt**
 
-```
+```kt
 // Initialize Realtime Database
 db = Firebase.database
 val messagesRef = db.reference.child(MESSAGES_CHILD)
@@ -459,7 +473,7 @@ Next in the `FriendlyMessageAdapter.kt` class implement the `bind()` method with
 
 **FriendlyMessageAdapter.kt**
 
-```
+```kt
 inner class MessageViewHolder(private val binding: MessageBinding) : ViewHolder(binding.root) {
     fun bind(item: FriendlyMessage) {
         binding.messageTextView.text = item.text
@@ -501,7 +515,7 @@ Update the *`onPause()`* and *`onResume()`* methods in `MainActivity` as shown b
 
 **MainActivity.kt**
 
-```
+```kt
 public override fun onPause() {
     adapter.stopListening()
     super.onPause()
@@ -516,7 +530,7 @@ public override fun onResume() {
 ### Test message sync
 
 1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
-2. In the Firebase console return to the **Realtime Database** section and manually add a new message.
+2. In the Emulators UI return to the **Realtime Database** section and manually add a new message.
 Confirm that the message shows up in your Android app:
 
 <img src="img/add-message.gif" />
@@ -536,7 +550,7 @@ This code is at the bottom of the `onCreate()` method already. Update the `onCli
 
 **MainActivity.kt**
 
-```
+```kt
 // Disable the send button when there's no text in the input field
 // See MyButtonObserver for details
 binding.messageEditText.addTextChangedListener(MyButtonObserver(binding.sendButton))
@@ -574,7 +588,7 @@ Once the user has selected an image, `startActivityForResult()` is called. This 
 
 **MainActivity.kt**
 
-```
+```kt
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
@@ -616,7 +630,7 @@ Add the method `putImageInStorage()` to `MainActivity`. It is called in `onActiv
 
 #### MainActivity.kt
 
-```
+```kt
 private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key: String?) {
     // First upload the image to Cloud Storage
     storageReference.putFile(uri)
@@ -748,11 +762,12 @@ For more information on how this works (including documentation on the "auth" va
 
 In the Firebase console select **Storage** in the left navigation panel. Then click **Get Started** to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.
 
-### Run your app in release mode
+### Connect to Firebase resources
 
 In `MainActivity.kt` you added a conditional block to connect to the Emulator Suite:
 
 ```kt
+// REMOVE OR DISABLE THIS
 if (BuildConfig.DEBUG) {
     Firebase.database.useEmulator("10.0.2.2", 9000)
     Firebase.auth.useEmulator("10.0.2.2", 9099)
