@@ -1,9 +1,9 @@
 {
   "project_info": {
     "project_number": "1234567890158",
-    "firebase_url": "https://fir-mock-project.firebaseio.com",
-    "project_id": "fir-mock-project",
-    "storage_bucket": "fir-mock-project.appspot.com"
+    "firebase_url": "https://demo-friendlychat-android.firebaseio.com",
+    "project_id": "demo-friendlychat-android",
+    "storage_bucket": "demo-friendlychat-android.appspot.com"
   },
   "client": [
     {

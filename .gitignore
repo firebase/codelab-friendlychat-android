@@ -11,3 +11,5 @@ build
 *.iml
 .idea
 local.properties
+*-debug.log
+.firebaserc
