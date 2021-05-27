@@ -280,7 +280,6 @@ Then implement the `signOut()` method to handle the sign out button:
 
 ```
 private fun signOut() {
-    auth.signOut()
     AuthUI.getInstance().signOut()
     startActivity(Intent(this, SignInActivity::class.java))
     finish()
@@ -654,7 +653,6 @@ Duration: 06:00
 
 In this step you will create a Firebase project to use during this codelab and add the project configuration to your app.
 
-
 ### Create a new project
 
 1. In your browser go to the  [Firebase console](https://console.firebase.google.com).
@@ -697,6 +695,7 @@ Before your application can access the Firebase Authentication APIs on behalf of
 2. Select **Authentication**
 3. Select the **Sign In Method** tab
 4. Toggle the **Google** switch to enabled (blue)
+4. Toggle the **Email/Password** switch to enabled (blue)
 5. Set a support email.
 6. Press **Save** on the resulting dialog
 
@@ -730,3 +729,18 @@ For more information on how this works (including documentation on the "auth" va
 ### Configure Cloud Storage for Firebase
 
 In the Firebase console select **Storage** in the left navigation panel. Then click **Get Started** to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.
+
+### Run your app in release mode
+
+In `MainActivity.kt` you added a conditional block to connect to the Emulator Suite:
+
+```kt
+if (BuildConfig.DEBUG) {
+    Firebase.database.useEmulator("10.0.2.2", 9000)
+    Firebase.auth.useEmulator("10.0.2.2", 9099)
+    Firebase.storage.useEmulator("10.0.2.2", 9199)
+}
+```
+
+If you want to connect your app to a **real** Firebase project you can either remove that block or run the app in release mode
+so that `BuildConfig.DEBUG` is `false`.

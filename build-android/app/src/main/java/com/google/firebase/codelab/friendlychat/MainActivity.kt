@@ -220,10 +220,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        auth.signOut()
         AuthUI.getInstance().signOut(this)
-
-        // TODO: Kill this activity
         startActivity(Intent(this, SignInActivity::class.java))
         finish()
     }
