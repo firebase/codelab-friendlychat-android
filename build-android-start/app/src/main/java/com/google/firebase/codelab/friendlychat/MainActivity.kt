@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.AuthUI.IdpConfig.*
+import com.google.firebase.codelab.friendlychat.BuildConfig
 import com.google.firebase.codelab.friendlychat.databinding.ActivityMainBinding
 import com.google.firebase.storage.StorageReference
 

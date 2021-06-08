@@ -408,6 +408,10 @@ Run the app on your device. You should be immediately sent to the sign-in screen
 
 > **Note**: Google Sign In will not work yet because we have not properly registered the app in the Firebase console. You'll have a chance to do this at the end of the codelab.
 
+After signing in you should also be able to see the signed-in user in the **Authentication** tab of the Emulators UI.
+
+<img src="img/emulators-auth-user.png" />
+
 ## Read Messages
 Duration: 05:00
 
