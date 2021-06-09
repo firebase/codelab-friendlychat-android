@@ -26,13 +26,13 @@ Welcome to the Friendly Chat codelab. In this codelab, you'll learn how to use t
 
 * How to use Firebase Authentication to allow users to sign in.
 * How to sync data using the Firebase Realtime Database.
-* How to store binary files in Firebase Storage.
-* How to use the Firebase Emulator Suite to develop an Android app with Firebase.
+* How to store binary files in Cloud Storage for Firebase.
+* How to use the Firebase Local Emulator Suite to develop an Android app with Firebase.
 
 #### What you'll need
 
 * [Android Studio](https://developer.android.com/studio) version 4.2+.
-* An Android [Emulator](https://developer.android.com/studio/run/emulator#install) with Android 5.0+.
+* An [Android Emulator](https://developer.android.com/studio/run/emulator#install) with Android 5.0+.
 * Java 7 or higher. To install Java use these [instructions](https://java.com/en/download/help/download_options.xml); to check your version, run `java -version`.
 * Familiarity with the Kotlin programming language.
 
@@ -54,7 +54,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android-start**—Starting code that you build upon in this codelab.
 > *  <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />**build-android**—Completed code for the finished sample app.
 > 
-> **Note**: If you want to run the finished app, you have to create a project in the Firebase console corresponding to the package name and SHA1. See  [Step #10](https://codelabs.developers.google.com/codelabs/firebase-android/#9) for more information.
+> **Note**: If you want to run the finished app, you have to create a Firebase project in the Firebase console, along with a Firebase Android App that has your app's package name and SHA1. For more information, see [Step #10](https://codelabs.developers.google.com/codelabs/firebase-android/#9) of this codelab.
 
 
 ### Import into Android Studio
@@ -121,46 +121,45 @@ apply plugin: 'com.google.gms.google-services'
 ## Install the Firebase CLI
 Duration: 05:00
 
-In order to run the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) you
-will need to install the [Firebase CLI](https://firebase.google.com/docs/cli).
+In order to run the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite), you
+need to install and use the [Firebase CLI](https://firebase.google.com/docs/cli).
 
 ### Install the CLI
 
 #### Option 1 - Install with npm
 
-If you already have Node.js and NPM installed on your machine you can install the CLI with the
+If you already have Node.js and npm installed on your machine, you can install the CLI with the
 following command:
 
 ```shell
 npm install -g firebase-tools@latest
 ```
 
-#### Option 2 - Install Standalone
+#### Option 2 - Install standalone binary
 
-If you do not have Node.js/NPM, you can install the CLI as a standalone binary following the
+If you don't have Node.js/npm or you're new to app development, you can install the CLI as a standalone binary following the
 [instructions for your platform here](https://firebase.google.com/docs/cli).
 
-### Check Installation
+### Check installation
 
 Once you have the Firebase CLI installed, run the following command to make sure you have
 version `9.11.0` or higher:
 
 ```shell
 firebase --version
-```
 
-## Connect to the the Emulator Suite
+## Connect to the Firebase Emulator Suite
 Duration: 02:00
 
 ### Start the emulators
 
-In your terminal run the following command within the `codelab-friendlychat-android` directory:
+In your terminal, run the following command from the root of your local `codelab-friendlychat-android` directory:
 
 ```shell
 firebase --project=demo-friendlychat-android emulators:start
 ```
 
-You should see some logs like this:
+You should see some logs like this. The port values were defined in the `firebase.json` file, which was included in the cloned sample code.
 
 ```shell
 $ firebase --project=demo-friendlychat-android emulators:start
@@ -190,7 +189,7 @@ Issues? Report them at https://github.com/firebase/firebase-tools/issues and att
 ```
 
 If you navigate to [http://localhost:4000](http://localhost:4000) in your web
-browser you should see the Emulator Suite UI:
+browser, you should see the Firebase Emulator Suite UI:
 
 <img src="img/emulators-home.png" alt="Emulator Suite UI home" />
 
@@ -198,13 +197,13 @@ Leave the `emulators:start` command running for the rest of the codelab.
 
 ### Connect your app
 
-In `MainActivity.kt` add the following code inside the `onCreate` method:
+In Android Studio, open `MainActivity.kt`, then add the following code inside the `onCreate` method:
 
 ```kotlin
-// When running in debug mode, connect to the Firebase Emulator Suite
-// "10.0.2.2" is a special value which allows the Android emulator to
-// connect to "localhost" on the host computer. The port values are
-// defined in the firebase.json file.
+// When running in debug mode, connect to the Firebase Emulator Suite.
+// "10.0.2.2" is a special IP address which allows the Android Emulator
+// to connect to "localhost" on the host computer. The port values (9xxx)
+// must match the values defined in the firebase.json file.
 if (BuildConfig.DEBUG) {
     Firebase.database.useEmulator("10.0.2.2", 9000)
     Firebase.auth.useEmulator("10.0.2.2", 9099)
@@ -217,7 +216,7 @@ Duration: 03:00
 
 ### Add google-services.json
 
-In order for your Android app to connect to Firebase, you must add a `google-services.json` file inside the `app` folder. For the purposes of this codelab we have provided a mock JSON file which will allow you to connect to the Emulator Suite.
+In order for your Android app to connect to Firebase, you must add a `google-services.json` file inside the `app` folder of your Android project. For the purposes of this codelab, we've provided a mock JSON file which will allow you to connect to the Firebase Emulator Suite.
 
 Copy the `mock-google-services.json` file into the `build-android-start/app` folder as `google-services.json`:
 
@@ -225,21 +224,21 @@ Copy the `mock-google-services.json` file into the `build-android-start/app` fol
 cp mock-google-services.json build-android-start/app/google-services.json
 ```
 
-In the final step of this codelab you will learn how to creat a real Firebase project and replace this file with your own configuration.
+In the final step of this codelab, you'll learn how to create a real Firebase project and Firebase Android App so that you can replace this mock JSON file with your own configuration.
 
 ### Run the app
 
-Now that you have imported the project into Android Studio and configured the `google-services` plugin with your JSON file, you are ready to run the app for the first time. 
+Now that you've imported the project into Android Studio and added a Firebase configuration JSON file, you're ready to run the app for the first time.
 
-1. Start your Android device or emulator.
-2. In Android Studio click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />) in the toolbar.
+1. Start your Android Emulator.
+2. In Android Studio, click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />) in the toolbar.
 
-The app should launch on your device. At this point, you should see an empty message list, and sending and receiving messages will not work. In the next section, you authenticate users so they can use Friendly Chat.
+The app should launch on your Android Emulator. At this point, you should see an empty message list, and sending and receiving messages will not work. In the next step of this codelab, you'll authenticate users so that they can use Friendly Chat.
 
 ## Enable Authentication
 Duration: 05:00
 
-This app will use Firebase Realtime Database to store all chat messages. Before we add data, we should make sure that the app is secure and that only authenticated users can post messages. In this step we will enable Firebase Authentication and configure Realtime Database Security Rules.
+This app will use Firebase Realtime Database to store all chat messages. Before we add data, though, we should make sure that the app is secure and that only authenticated users can post messages. In this step, we will enable Firebase Authentication and configure Realtime Database Security Rules.
 
 ### Add basic sign-in functionality
 
@@ -323,7 +322,7 @@ Now we have all of the logic in place to send the user to the sign-in screen whe
 
 #### Implement the Sign-In screen
 
-Open the file `SignInActivity.kt`.  Here a simple Sign-In button is used to initiate authentication. In this step you will implement the logic to sign in with FirebaseUI.
+Open the file `SignInActivity.kt`.  Here a simple Sign-In button is used to initiate authentication. In this section, you will use FirebaseUI to implement the logic for sign in.
 
 Add an Auth instance variable in the `SignInActivity` class under the `// Firebase instance variables` comment:
 
@@ -343,7 +342,7 @@ Then, edit the `onCreate()` method to initialize Firebase in the same way you di
 auth = Firebase.auth
 ```
 
-Next, edit the `onStart()` method to sign in with FirebaseUI:
+Next, edit the `onStart()` method to kick off the FirebaseUI sign in flow:
 
 **SignInActivity.kt**
 
@@ -405,29 +404,29 @@ That's it! You've implemented authentication with FirebaseUI in just a few metho
 
 #### Test your work
 
-Run the app on your device. You should be immediately sent to the sign-in screen. Tap the **Sign in with email** button and create an account. You should then be sent to the messaging screen if everything worked well.
+Run the app on your Android Emulator. You should be immediately sent to the sign-in screen. Tap the **Sign in with email** button, then create an account. If everything is implemented correctly, you should be sent to the messaging screen.
 
-> **Note**: Google Sign In will not work yet because we have not properly registered the app in the Firebase console. You'll have a chance to do this at the end of the codelab.
+> Note: Google Sign-In will not work yet because you haven't registered your app with Firebase. You'll have a chance to do this at the end of the codelab.
 
-After signing in you should also be able to see the signed-in user in the **Authentication** tab of the Emulators UI.
+After signing in, open the Firebase Emulator Suite UI in your browser, then click the **Authentication** tab to see this first signed-in user account.
 
 <img src="img/emulators-auth-user.png" />
 
-## Read Messages
+## Read messages
 Duration: 05:00
 
 In this step we will add functionality to read and display messages stored in Realtime Database.
 
-### Import Sample Messages
+### Import sample messages
 
-1. In the Emulator Suite UI, select the **Realtime Database** tab.
-2. Drag and drop the `initial_messages.json` file from the codelab repository into the data viewer. 
+1. In the Firebase Emulator Suite UI, select the **Realtime Database** tab.
+2. Drag and drop the `initial_messages.json` file from your local copy of the codelab repository into the data viewer. 
 
 <img src="img/import-data.gif" />
 
 You should now have a few messages under the `messages` node of the database.
 
-### Read Data
+### Read data
 
 #### Synchronize messages
 
@@ -535,7 +534,7 @@ public override fun onResume() {
 ### Test message sync
 
 1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
-2. In the Emulators UI return to the **Realtime Database** section and manually add a new message.
+2. In the Emulator Suite UI, return to the **Realtime Database** tab, then manually add a new message.
 Confirm that the message shows up in your Android app:
 
 <img src="img/add-message.gif" />
@@ -663,11 +662,11 @@ private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key:
 }
 ```
 
-#### Test Sending Messages
+#### Test sending messages
 
 1. Click the  <img src="img/execute.png" alt="execute"  width="20.00" />**Run** button.
-2. Enter a message and hit the send button, the new message should be visible in the app UI and in the Emulators UI
-3. Tap the "+" image to select an image from your device. The new message should be visible first with a placeholder image, and then with the selected image once the image upload is complete. The new message should also be visible in the Emulators UI, as an object in the Database and as a blob in Storage.
+2. In your Android Emulator, enter a message, then tap the send button. The new message should be visible in the app UI and in the Firebase Emulator Suite UI.
+3. In the Android Emulator, tap the "+" image to select an image from your device. The new message should be visible first with a placeholder image, and then with the selected image once the image upload is complete. The new message should also be visible in the Emulator Suite UI, specifically as an object in the Realtime Database tab and as a blob in the Storage tab.
 
 
 ## Congratulations!
@@ -683,24 +682,26 @@ You just built a real-time chat application using Firebase!
 
 Next try using what you learned to add Firebase to your own Android app! To learn more about Firebase visit [firebase.google.com](https://firebase.google.com)
 
-If you want to learn how to set up a _real_ Firebase project rather than using the local emulators, continue to the next step.
+If you want to learn how to set up a _real_ Firebase project and use _real_ Firebase resources (instead of a demo project and _only_ emulated resources), continue to the next step.
 
-## Optional: Create Firebase project
+Note: Even after you set up a real Firebase project and _especially_ when you get started building a real app, we recommend using the Firebase Local Emulator Suite for development and testing.
+
+## Optional: Create and set up a Firebase project
 Duration: 06:00
 
-In this step you will create a Firebase project to use during this codelab and add the project configuration to your app.
+In this step, you'll create a real Firebase project and a Firebase Android App to use with this codelab. You'll also add your app-specific Firebase configuration to your app. And finally, you'll set up real Firebase resources to use with your app.
 
-### Create a new project
+### Create a Firebase project
 
-1. In your browser go to the  [Firebase console](https://console.firebase.google.com).
+1. In your browser, go to the  [Firebase console](https://console.firebase.google.com).
 2. Select **Add project**.
-3. Select or enter a project name, you can use any name you want.
-4. You will not need Google Analytics for this project, so you can disable it when asked.
-5. Click **Create Project** and when your project is ready click **Continue**
+3. Select or enter a project name. You can use any name you want.
+4. You do not need Google Analytics for this codelab, so you can skip enabling it for your project.
+5. Click **Create Project**. When your project is ready, click **Continue**.
 
 ### Add Firebase to your app
 
-Before you begin this step, get the SHA1 hash of your app: Run the command below in the project directory to determine the SHA1 of your debug key:
+Before you begin this step, get the SHA1 hash of your app. Run the following command from your local `build-android-start` directory to determine the SHA1 of your debug key:
 
 ```console
 ./gradlew signingReport
@@ -713,63 +714,50 @@ SHA-256: 05:A2:2A:35:EE:F2:51:23:72:4D:72:67:A5:6A:8A:58:22:2C:00:A6:AB:F6:45:D5
 Valid until: Wednesday, August 10, 2044
 ```
 
-You should see some output like the above, the important line is the `SHA1` key. If you're unable to find your SHA1 hash see [this page](https://developers.google.com/android/guides/client-auth) for more information.
+You should see some output like the above. The important line is the `SHA1` hash. If you're unable to find your SHA1 hash, see [this page](https://developers.google.com/android/guides/client-auth) for more information.
 
-Now in the Firebase console, follow these steps to add an Android app to your project:
+Go back to the Firebase console, and follow these steps to register your Android project with your Firebase project:
 
   1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
      <img src="img/add-android-app.png" alt="add android app" />
   1. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
-  1. Click **Register App** and then click **Download google-services.json** to download the `google-services` configuration file.
-  1. Copy the `google-services.json` file into the *`app`* directory in your project. After the file is downloaded you can **Skip** the next steps shown in the console (they've already been done for you in the build-android-start project).
-  1. To be sure that all dependencies are available to your app, you should sync your project with gradle files at this point. Select **File** > **Sync Project with Gradle Files** from the Android Studio toolbar.
+  1. Click **Register App**, then click **Download google-services.json** to download the your Firebase configuration file.
+  1. Copy the `google-services.json` file into the *`app`* directory of your Android project.
+  1. **Skip** the next steps shown in the console's setup workflow (they've already been done for you in the `build-android-start` project).
+  1. Make sure that all dependencies are available to your app by syncing your project with Gradle files. From the Android Studio toolbar, select **File** > **Sync Project with Gradle Files**.
 
 ### Configure Firebase Authentication
 
-Before your application can access the Firebase Authentication APIs on behalf of your users, you will have to enable it 
+Before your app can access the Firebase Authentication APIs on behalf of your users, you need to enable Firebase Authentication and the sign-in providers you want to use in your app.
 
-1. Navigate to the  [Firebase console](http://console.firebase.google.com) and select your project
-2. Select **Authentication**
-3. Select the **Sign In Method** tab
-4. Toggle the **Google** switch to enabled (blue)
-4. Toggle the **Email/Password** switch to enabled (blue)
-5. Set a support email.
-6. Press **Save** on the resulting dialog
+1. In the [Firebase console](http://console.firebase.google.com), select **Authentication** from the left-side navigation panel.
+1. Select the **Sign-in method** tab.
+1. Click **Email/Password**, then toggle the switch to enabled (blue).
+1. Click **Google**, then toggle the switch to enabled (blue) and set a project support email.
 
 If you get errors later in this codelab with the message "CONFIGURATION_NOT_FOUND", come back to this step and double check your work.
 
 ### Configure Realtime Database
 
-As mentioned, this app will store chat messages in Firebase Realtime Database. In this step we will create a database and configure the security via a JSON configuration language called Security Rules.
+The app in this codelab stores chat messages in Firebase Realtime Database. In this section, we'll create a database and configure its security via a JSON configuration language called Firebase Security Rules.
 
-1. Go to your project in the Firebase console and select **Realtime Database** from the left navigation.
-2. Click **Create Database** create a new Realtime Database instance and then select the `us-central1` region and click **Next**.
-3. When prompted about security rules, choose **locked mode** and click **Enable**. 
+1. In the [Firebase console](http://console.firebase.google.com), select **Realtime Database** from the left-side navigation panel.
+1. Click **Create Database** to create a new Realtime Database instance. When prompted, select the `us-central1` region, then click **Next**.
+1. When prompted about security rules, choose **locked mode**, then click **Enable**. 
+1. Once the database instance has been created, select the **Rules** tab, then update the rules configuration with the following:
 
-Once the database has been created, select the **Rules** tab and update the rules configuration with the following:
 
-```
-{
-  "rules": {
-    "messages": {
-      ".read": "auth.uid != null",
-      ".write": "auth.uid != null"
-    }
-  }
-}
-```
-
-Click "Publish" to publish the new rules.
-
-For more information on how this works (including documentation on the "auth" variable) see the Firebase  [security documentation](https://firebase.google.com/docs/database/security/quickstart).
+For more information on how Security Rules work (including documentation on the "auth" variable), see the [Realtime Database security documentation](https://firebase.google.com/docs/database/security/quickstart).
 
 ### Configure Cloud Storage for Firebase
 
-In the Firebase console select **Storage** in the left navigation panel. Then click **Get Started** to enable Cloud Storage for your project.  Continue following the steps in the prompt, using the suggested defaults.
+1. In the [Firebase console](http://console.firebase.google.com), select **Storage** from the left-side navigation panel.
+1. Click **Get Started** to enable Cloud Storage for your project.
+1. Follow the steps in the dialog to set up your bucket, using the suggested defaults.
 
 ### Connect to Firebase resources
 
-In `MainActivity.kt` you added a conditional block to connect to the Emulator Suite:
+In an earlier step of this codelab, you added the following to `MainActivity.kt`. This conditional block connected your Android project to the Firebase Emulator Suite.
 
 ```kt
 // REMOVE OR DISABLE THIS
@@ -780,5 +768,4 @@ if (BuildConfig.DEBUG) {
 }
 ```
 
-If you want to connect your app to a **real** Firebase project you can either remove that block or run the app in release mode
-so that `BuildConfig.DEBUG` is `false`.
+If you want to connect your app to your new **_real_** Firebase project and its **_real_** Firebase resources, you can either remove this block or run your app in release mode so that `BuildConfig.DEBUG` is `false`.
