@@ -61,7 +61,7 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 
 In Android Studio click **File** > **Open** and  select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
 
-You should now have the `build-android-start` project open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in the next step.
+You should now have the `build-android-start` project open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in a later step.
 
 
 ### Check Dependencies
@@ -79,7 +79,6 @@ buildscript {
 
         // The google-services plugin is required to parse the google-services.json file
         classpath 'com.google.gms:google-services:4.3.5'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.5.1'
     }
 }
 ```
@@ -90,7 +89,6 @@ buildscript {
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -147,6 +145,7 @@ version `9.11.0` or higher:
 
 ```shell
 firebase --version
+```
 
 ## Connect to the Firebase Emulator Suite
 Duration: 02:00
@@ -156,13 +155,13 @@ Duration: 02:00
 In your terminal, run the following command from the root of your local `codelab-friendlychat-android` directory:
 
 ```shell
-firebase --project=demo-friendlychat-android emulators:start
+firebase emulators:start --project=demo-friendlychat-android
 ```
 
 You should see some logs like this. The port values were defined in the `firebase.json` file, which was included in the cloned sample code.
 
 ```shell
-$ firebase --project=demo-friendlychat-android emulators:start
+$ firebase emulators:start --project=demo-friendlychat-android
 i  emulators: Starting emulators: auth, database, storage
 i  emulators: Detected demo project ID "demo-friendlychat-android", emulated services will use a demo configuration and attempts to access non-emulated services for this project will fail.
 i  database: Database Emulator logging to database-debug.log
@@ -188,8 +187,8 @@ i  ui: Emulator UI logging to ui-debug.log
 Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
 ```
 
-If you navigate to [http://localhost:4000](http://localhost:4000) in your web
-browser, you should see the Firebase Emulator Suite UI:
+Navigate to [http://localhost:4000](http://localhost:4000) in your web
+browser to view the Firebase Emulator Suite UI:
 
 <img src="img/emulators-home.png" alt="Emulator Suite UI home" />
 
@@ -664,7 +663,7 @@ private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key:
 
 #### Test sending messages
 
-1. Click the  <img src="img/execute.png" alt="execute"  width="20.00" />**Run** button.
+1. In Android Studio, click the <img src="img/execute.png" alt="execute"  width="20.00" />**Run** button.
 2. In your Android Emulator, enter a message, then tap the send button. The new message should be visible in the app UI and in the Firebase Emulator Suite UI.
 3. In the Android Emulator, tap the "+" image to select an image from your device. The new message should be visible first with a placeholder image, and then with the selected image once the image upload is complete. The new message should also be visible in the Emulator Suite UI, specifically as an object in the Realtime Database tab and as a blob in the Storage tab.
 
@@ -699,7 +698,7 @@ In this step, you'll create a real Firebase project and a Firebase Android App t
 4. You do not need Google Analytics for this codelab, so you can skip enabling it for your project.
 5. Click **Create Project**. When your project is ready, click **Continue**.
 
-### Add Firebase to your app
+### Add Firebase to your Android project
 
 Before you begin this step, get the SHA1 hash of your app. Run the following command from your local `build-android-start` directory to determine the SHA1 of your debug key:
 
@@ -746,6 +745,16 @@ The app in this codelab stores chat messages in Firebase Realtime Database. In t
 1. When prompted about security rules, choose **locked mode**, then click **Enable**. 
 1. Once the database instance has been created, select the **Rules** tab, then update the rules configuration with the following:
 
+```
+{
+  "rules": {
+    "messages": {
+      ".read": "auth.uid != null",
+      ".write": "auth.uid != null"
+    }
+  }
+}
+```
 
 For more information on how Security Rules work (including documentation on the "auth" variable), see the [Realtime Database security documentation](https://firebase.google.com/docs/database/security/quickstart).
 
