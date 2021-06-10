@@ -229,6 +229,10 @@ In the final step of this codelab, you'll learn how to create a real Firebase pr
 
 Now that you've imported the project into Android Studio and added a Firebase configuration JSON file, you're ready to run the app for the first time.
 
+> aside negative
+>
+> Note: in order for your app to communicate with the Firebase Emulator Suite it must be running on an Android Emulator, not a real Android device. This will allow the app to communicate with the Firebase Emulator Suite on `localhost`.
+
 1. Start your Android Emulator.
 2. In Android Studio, click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />) in the toolbar.
 
@@ -405,6 +409,8 @@ That's it! You've implemented authentication with FirebaseUI in just a few metho
 
 Run the app on your Android Emulator. You should be immediately sent to the sign-in screen. Tap the **Sign in with email** button, then create an account. If everything is implemented correctly, you should be sent to the messaging screen.
 
+> aside negative
+>
 > Note: Google Sign-In will not work yet because you haven't registered your app with Firebase. You'll have a chance to do this at the end of the codelab.
 
 After signing in, open the Firebase Emulator Suite UI in your browser, then click the **Authentication** tab to see this first signed-in user account.
@@ -745,16 +751,14 @@ The app in this codelab stores chat messages in Firebase Realtime Database. In t
 1. When prompted about security rules, choose **locked mode**, then click **Enable**. 
 1. Once the database instance has been created, select the **Rules** tab, then update the rules configuration with the following:
 
-```
-{
-  "rules": {
-    "messages": {
-      ".read": "auth.uid != null",
-      ".write": "auth.uid != null"
-    }
-  }
-}
-```
+        {
+            "rules": {
+                "messages": {
+                ".read": "auth.uid != null",
+                ".write": "auth.uid != null"
+                }
+            }
+        }
 
 For more information on how Security Rules work (including documentation on the "auth" variable), see the [Realtime Database security documentation](https://firebase.google.com/docs/database/security/quickstart).
 
