@@ -752,12 +752,12 @@ The app in this codelab stores chat messages in Firebase Realtime Database. In t
 1. Once the database instance has been created, select the **Rules** tab, then update the rules configuration with the following:
 
         {
-            "rules": {
-                "messages": {
-                ".read": "auth.uid != null",
-                ".write": "auth.uid != null"
-                }
+          "rules": {
+            "messages": {
+              ".read": "auth.uid != null",
+              ".write": "auth.uid != null"
             }
+          }
         }
 
 For more information on how Security Rules work (including documentation on the "auth" variable), see the [Realtime Database security documentation](https://firebase.google.com/docs/database/security/quickstart).
