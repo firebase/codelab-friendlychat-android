@@ -17,13 +17,19 @@ package com.google.firebase.codelab.friendlychat
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.IdpResponse
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.codelab.friendlychat.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
+
+    // ActivityResultLauncher
+    // TODO: Implement
 
     // Firebase instance variables
     // TODO: implement
@@ -49,8 +55,7 @@ class SignInActivity : AppCompatActivity() {
         // TODO: implement
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         // TODO: implement
     }
 
@@ -61,6 +66,5 @@ class SignInActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SignInActivity"
-        private const val RC_SIGN_IN = 9001
     }
 }

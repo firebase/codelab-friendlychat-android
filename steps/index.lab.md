@@ -108,8 +108,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Firebase UI Library
-    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
-    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.2.0'
 }
 
 // Apply the 'google-services' plugin
@@ -345,6 +345,20 @@ Then, edit the `onCreate()` method to initialize Firebase in the same way you di
 auth = Firebase.auth
 ```
 
+Add an `ActivityResultLauncher` field to `SignInActivity`:
+
+**SignInActivity.kt**
+
+```kotlin
+// ADD THIS
+private val signIn: ActivityResultLauncher<Intent> =
+        registerForActivityResult(FirebaseAuthUIActivityResultContract(), this::onSignInResult)
+
+override fun onCreate(savedInstanceState: Bundle?) {
+    // ...
+}
+```
+
 Next, edit the `onStart()` method to kick off the FirebaseUI sign in flow:
 
 **SignInActivity.kt**
@@ -367,37 +381,33 @@ public override fun onStart() {
                 ))
                 .build()
 
-        startActivityForResult(signInIntent, RC_SIGN_IN)
+        signIn.launch(signInIntent)
     } else {
         goToMainActivity()
     }
 }
 ```
 
-Next, implement the `onActivityResult()` method to handle the sign in result. If the result of the signin was successful, continue to `MainActivity`:
+Next, implement the `onSignInResult` method to handle the sign in result. If the result of the signin was successful, continue to `MainActivity`:
 
 **SignInActivity.kt**
 
 ```kotlin
-public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
+private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+    if (result.resultCode == RESULT_OK) {
+        Log.d(TAG, "Sign in successful!")
+        goToMainActivity()
+    } else {
+        Toast.makeText(
+                this,
+                "There was an error signing in",
+                Toast.LENGTH_LONG).show()
 
-    // Handle FirebaseUI Authentication result
-    if (requestCode == RC_SIGN_IN) {
-        val response = IdpResponse.fromResultIntent(data)
-        if (resultCode == RESULT_OK) {
-            Log.d(TAG, "Sign in successful!")
-            goToMainActivity()
+        val response = result.idpResponse
+        if (response == null) {
+            Log.w(TAG, "Sign in canceled")
         } else {
-            Toast.makeText(
-                    this,
-                    "There was an error signing in",
-                    Toast.LENGTH_LONG).show()
-            if (response == null) {
-                Log.w(TAG, "Sign in canceled")
-            } else {
-                Log.w(TAG, "Sign in error", response.error)
-            }
+            Log.w(TAG, "Sign in error", response.error)
         }
     }
 }

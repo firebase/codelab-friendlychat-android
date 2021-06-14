@@ -61,8 +61,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Firebase UI
-    implementation 'com.firebaseui:firebase-ui-auth:7.1.1'
-    implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
+    implementation 'com.firebaseui:firebase-ui-database:7.2.0'
 
     // Testing dependencies
     testImplementation 'junit:junit:4.13.2'

@@ -19,22 +19,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.IdpResponse
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.codelab.friendlychat.databinding.ActivitySignInBinding
 import com.google.firebase.ktx.Firebase
 
+
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
+
+    private val signIn: ActivityResultLauncher<Intent> =
+            registerForActivityResult(FirebaseAuthUIActivityResultContract(), this::onSignInResult)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,31 +63,27 @@ class SignInActivity : AppCompatActivity() {
                     ))
                     .build()
 
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            signIn.launch(signInIntent)
         } else {
             goToMainActivity()
         }
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
+        if (result.resultCode == RESULT_OK) {
+            Log.d(TAG, "Sign in successful!")
+            goToMainActivity()
+        } else {
+            Toast.makeText(
+                    this,
+                    "There was an error signing in",
+                    Toast.LENGTH_LONG).show()
 
-        // Handle FirebaseUI Authentication result
-        if (requestCode == RC_SIGN_IN) {
-            val response = IdpResponse.fromResultIntent(data)
-            if (resultCode == RESULT_OK) {
-                Log.d(TAG, "Sign in successful!")
-                goToMainActivity()
+            val response = result.idpResponse
+            if (response == null) {
+                Log.w(TAG, "Sign in canceled")
             } else {
-                Toast.makeText(
-                        this,
-                        "There was an error signing in",
-                        Toast.LENGTH_LONG).show()
-                if (response == null) {
-                    Log.w(TAG, "Sign in canceled")
-                } else {
-                    Log.w(TAG, "Sign in error", response.error)
-                }
+                Log.w(TAG, "Sign in error", response.error)
             }
         }
     }
@@ -98,6 +95,5 @@ class SignInActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "SignInActivity"
-        private const val RC_SIGN_IN = 9001
     }
 }
