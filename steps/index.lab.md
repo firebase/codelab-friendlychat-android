@@ -689,7 +689,7 @@ Next try using what you learned to add Firebase to your own Android app! To lear
 
 If you want to learn how to set up a _real_ Firebase project and use _real_ Firebase resources (instead of a demo project and _only_ emulated resources), continue to the next step.
 
-Note: Even after you set up a real Firebase project and _especially_ when you get started building a real app, we recommend using the Firebase Local Emulator Suite for development and testing.
+> Note: Even after you set up a real Firebase project and _especially_ when you get started building a real app, we recommend using the Firebase Local Emulator Suite for development and testing.
 
 ## Optional: Create and set up a Firebase project
 Duration: 06:00
