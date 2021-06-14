@@ -536,7 +536,7 @@ public override fun onResume() {
 }
 ```
 
-### Test message sync
+### Test syncing messages
 
 1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
 2. In the Emulator Suite UI, return to the **Realtime Database** tab, then manually add a new message.
