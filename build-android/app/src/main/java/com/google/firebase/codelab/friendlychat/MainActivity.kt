@@ -24,12 +24,12 @@ import android.view.MenuItem
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.AuthUI.IdpConfig.*
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.codelab.friendlychat.BuildConfig
 import com.google.firebase.codelab.friendlychat.databinding.ActivityMainBinding
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
 import com.google.firebase.database.DatabaseReference
@@ -39,8 +39,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 
+
 class MainActivity : AppCompatActivity() {
-    private lateinit var signInClient: GoogleSignInClient
     private lateinit var binding: ActivityMainBinding
     private lateinit var manager: LinearLayoutManager
 
@@ -57,6 +57,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // When running in debug mode, connect to the Firebase Emulator Suite
+        // "10.0.2.2" is a special value which allows the Android emulator to
+        // connect to "localhost" on the host computer. The port values are
+        // defined in the firebase.json file.
+        if (BuildConfig.DEBUG) {
+            Firebase.database.useEmulator("10.0.2.2", 9000)
+            Firebase.auth.useEmulator("10.0.2.2", 9099)
+            Firebase.storage.useEmulator("10.0.2.2", 9199)
+        }
+
         // Initialize Firebase Auth and check if the user is signed in
         auth = Firebase.auth
         if (auth.currentUser == null) {
@@ -65,12 +75,6 @@ class MainActivity : AppCompatActivity() {
             finish()
             return
         }
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        signInClient = GoogleSignIn.getClient(this, gso)
 
         // Initialize Realtime Database
         db = Firebase.database
@@ -217,8 +221,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        auth.signOut()
-        signInClient.signOut()
+        AuthUI.getInstance().signOut(this)
         startActivity(Intent(this, SignInActivity::class.java))
         finish()
     }

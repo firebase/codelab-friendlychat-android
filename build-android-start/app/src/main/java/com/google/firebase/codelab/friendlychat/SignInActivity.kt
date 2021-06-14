@@ -17,16 +17,19 @@ package com.google.firebase.codelab.friendlychat
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.firebase.ui.auth.AuthUI
+import com.firebase.ui.auth.IdpResponse
+import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.codelab.friendlychat.databinding.ActivitySignInBinding
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
-    private lateinit var signInClient: GoogleSignInClient
+
+    // ActivityResultLauncher
+    // TODO: Implement
 
     // Firebase instance variables
     // TODO: implement
@@ -39,35 +42,29 @@ class SignInActivity : AppCompatActivity() {
         binding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set click listeners
-        binding.signInButton.setOnClickListener { signIn() }
-
-        // Configure Google Sign In
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        signInClient = GoogleSignIn.getClient(this, gso)
-
         // Initialize FirebaseAuth
         // TODO: implement
+    }
+
+    public override fun onStart() {
+        super.onStart()
+        // TODO: Implement
     }
 
     private fun signIn() {
         // TODO: implement
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
         // TODO: implement
     }
 
-    private fun firebaseAuthWithGoogle(acct: GoogleSignInAccount?) {
-        // TODO: implement
+    private fun goToMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
     companion object {
         private const val TAG = "SignInActivity"
-        private const val RC_SIGN_IN = 9001
     }
 }
