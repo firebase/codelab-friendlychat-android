@@ -59,12 +59,12 @@ $ git clone https://github.com/firebase/codelab-friendlychat-android
 
 ### Import into Android Studio
 
-In Android Studio click **File** > **Open** and  select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
+In Android Studio, select **File** > **Open**, then select the `build-android-start` directory ( <img src="img/android_studio_folder.png" alt="android_studio_folder"  width="20.00" />) from the directory where you downloaded the sample code.
 
 You should now have the `build-android-start` project open in Android Studio. If you see a warning about a `google-services.json` file missing, don't worry. It will be added in a later step.
 
 
-### Check Dependencies
+### Check dependencies
 
 In this codelab all of the dependencies you will need have already been added for you, but it's important to understand how to add the Firebase SDK to your app:
 
@@ -231,7 +231,7 @@ Now that you've imported the project into Android Studio and added a Firebase co
 
 > aside negative
 >
-> Note: in order for your app to communicate with the Firebase Emulator Suite it must be running on an Android Emulator, not a real Android device. This will allow the app to communicate with the Firebase Emulator Suite on `localhost`.
+> Note: In order for your app to communicate with the Firebase Emulator Suite, it must be running on an Android Emulator, not a real Android device. This will allow the app to communicate with the Firebase Emulator Suite on `localhost`.
 
 1. Start your Android Emulator.
 2. In Android Studio, click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />) in the toolbar.
@@ -430,7 +430,7 @@ After signing in, open the Firebase Emulator Suite UI in your browser, then clic
 ## Read messages
 Duration: 05:00
 
-In this step we will add functionality to read and display messages stored in Realtime Database.
+In this step, we will add functionality to read and display messages stored in Realtime Database.
 
 ### Import sample messages
 
@@ -546,7 +546,7 @@ public override fun onResume() {
 }
 ```
 
-### Test message sync
+### Test syncing messages
 
 1. Click **Run** ( <img src="img/execute.png" alt="execute"  width="20.00" />).
 2. In the Emulator Suite UI, return to the **Realtime Database** tab, then manually add a new message.
@@ -695,11 +695,11 @@ You just built a real-time chat application using Firebase!
 * Firebase Realtime Database
 * Cloud Storage for Firebase
 
-Next try using what you learned to add Firebase to your own Android app! To learn more about Firebase visit [firebase.google.com](https://firebase.google.com)
+Next, try using what you learned in this codelab to add Firebase to your own Android app! To learn more about Firebase, visit [firebase.google.com](https://firebase.google.com).
 
 If you want to learn how to set up a _real_ Firebase project and use _real_ Firebase resources (instead of a demo project and _only_ emulated resources), continue to the next step.
 
-Note: Even after you set up a real Firebase project and _especially_ when you get started building a real app, we recommend using the Firebase Local Emulator Suite for development and testing.
+> Note: Even after you set up a real Firebase project and _especially_ when you get started building a real app, we recommend using the Firebase Local Emulator Suite for development and testing.
 
 ## Optional: Create and set up a Firebase project
 Duration: 06:00
@@ -736,7 +736,7 @@ Go back to the Firebase console, and follow these steps to register your Android
   1. From the overview screen of your new project, click the Android icon to launch the setup workflow:
      <img src="img/add-android-app.png" alt="add android app" />
   1. On the next screen, enter `com.google.firebase.codelab.friendlychat` as the package name for your app.
-  1. Click **Register App**, then click **Download google-services.json** to download the your Firebase configuration file.
+  1. Click **Register App**, then click **Download google-services.json** to download your Firebase configuration file.
   1. Copy the `google-services.json` file into the *`app`* directory of your Android project.
   1. **Skip** the next steps shown in the console's setup workflow (they've already been done for you in the `build-android-start` project).
   1. Make sure that all dependencies are available to your app by syncing your project with Gradle files. From the Android Studio toolbar, select **File** > **Sync Project with Gradle Files**.
