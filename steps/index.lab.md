@@ -89,6 +89,7 @@ buildscript {
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -111,9 +112,6 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
     implementation 'com.firebaseui:firebase-ui-database:7.2.0'
 }
-
-// Apply the 'google-services' plugin
-apply plugin: 'com.google.gms.google-services'
 ```
 
 ## Install the Firebase CLI
