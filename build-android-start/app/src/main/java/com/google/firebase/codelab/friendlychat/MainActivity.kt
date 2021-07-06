@@ -15,7 +15,6 @@
  */
 package com.google.firebase.codelab.friendlychat
 
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
@@ -31,6 +30,10 @@ import com.google.firebase.storage.StorageReference
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var manager: LinearLayoutManager
+
+    private val openDocument = registerForActivityResult(MyOpenDocumentContract()) { uri ->
+        onImageSelected(uri)
+    }
 
     // TODO: implement Firebase instance variables
 
@@ -57,10 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         // When the image button is clicked, launch the image picker
         binding.addMessageImageView.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_IMAGE)
+            openDocument.launch(arrayOf("image/*"))
         }
     }
 
@@ -94,8 +94,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun onImageSelected(uri: Uri) {
         // TODO: implement
     }
 
@@ -112,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         const val MESSAGES_CHILD = "messages"
         const val ANONYMOUS = "anonymous"
-        private const val REQUEST_IMAGE = 2
         private const val LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif"
     }
 }
