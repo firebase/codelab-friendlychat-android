@@ -601,49 +601,43 @@ To add images this codelab uses Cloud Storage for Firebase. Cloud Storage is a g
 
 ##### Handle image selection and write temp message
 
-Once the user has selected an image, `startActivityForResult()` is called. This is already implemented in the code at the end of the `onCreate()` method. It launches the `MainActivity`'s `onActivityResult()` method. Using the code snippet below, you will write a message with a temporary image url to the database indicating the image is being uploaded.
+Once the user has selected an image, the image selection `Intent` is launched. This is already implemented in the code at the end of the `onCreate()` method. When finished it calls the `MainActivity`'s `onImageSelected()` method. Using the code snippet below, you will write a message with a temporary image url to the database indicating the image is being uploaded.
 
 **MainActivity.kt**
 
 ```kt
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
-    if (requestCode == REQUEST_IMAGE) {
-        if (resultCode == RESULT_OK && data != null) {
-            val uri = data.data
-            Log.d(TAG, "Uri: " + uri.toString())
-            val user = auth.currentUser
-            val tempMessage =
-                FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
-            db.reference.child(MESSAGES_CHILD).push()
-                .setValue(
+private fun onImageSelected(uri: Uri) {
+    Log.d(TAG, "Uri: $uri")
+    val user = auth.currentUser
+    val tempMessage = FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
+    db.reference
+            .child(MESSAGES_CHILD)
+            .push()
+            .setValue(
                     tempMessage,
                     DatabaseReference.CompletionListener { databaseError, databaseReference ->
                         if (databaseError != null) {
                             Log.w(
-                                TAG, "Unable to write message to database.",
-                                        databaseError.toException()
-                                    )
-                                    return@CompletionListener
-                                }
+                                    TAG, "Unable to write message to database.",
+                                    databaseError.toException()
+                            )
+                            return@CompletionListener
+                        }
 
-                                // Build a StorageReference and then upload the file
-                                val key = databaseReference.key
-                                val storageReference = Firebase.storage
-                                    .getReference(user!!.uid)
-                                    .child(key!!)
-                                    .child(uri!!.lastPathSegment!!)
-                                putImageInStorage(storageReference, uri, key)
-                            })
-        }
-    }
+                        // Build a StorageReference and then upload the file
+                        val key = databaseReference.key
+                        val storageReference = Firebase.storage
+                                .getReference(user!!.uid)
+                                .child(key!!)
+                                .child(uri.lastPathSegment!!)
+                        putImageInStorage(storageReference, uri, key)
+                    })
 }
 ```
 
 #### Upload image and update message
 
-Add the method `putImageInStorage()` to `MainActivity`. It is called in `onActivityResult()` to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image. 
+Add the method `putImageInStorage()` to `MainActivity`. It is called in `onImageSelected()` to initiate the upload of the selected image. Once the upload is complete you will update the message to use the appropriate image. 
 
 #### MainActivity.kt
 

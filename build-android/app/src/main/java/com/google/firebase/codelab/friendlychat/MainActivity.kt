@@ -29,7 +29,6 @@ import com.firebase.ui.auth.AuthUI.IdpConfig.*
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.codelab.friendlychat.BuildConfig
 import com.google.firebase.codelab.friendlychat.databinding.ActivityMainBinding
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
 import com.google.firebase.database.DatabaseReference
@@ -48,6 +47,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseDatabase
     private lateinit var adapter: FriendlyMessageAdapter
+
+    private val openDocument = registerForActivityResult(MyOpenDocumentContract()) { uri ->
+        onImageSelected(uri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -116,10 +119,7 @@ class MainActivity : AppCompatActivity() {
 
         // When the image button is clicked, launch the image picker
         binding.addMessageImageView.setOnClickListener {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_IMAGE)
+            openDocument.launch(arrayOf("image/*"))
         }
     }
 
@@ -160,38 +160,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
-        if (requestCode == REQUEST_IMAGE) {
-            if (resultCode == RESULT_OK && data != null) {
-                val uri = data.data
-                Log.d(TAG, "Uri: " + uri.toString())
-                val user = auth.currentUser
-                val tempMessage =
-                    FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
-                db.reference.child(MESSAGES_CHILD).push()
-                    .setValue(
+    private fun onImageSelected(uri: Uri) {
+        Log.d(TAG, "Uri: $uri")
+        val user = auth.currentUser
+        val tempMessage = FriendlyMessage(null, getUserName(), getPhotoUrl(), LOADING_IMAGE_URL)
+        db.reference
+                .child(MESSAGES_CHILD)
+                .push()
+                .setValue(
                         tempMessage,
                         DatabaseReference.CompletionListener { databaseError, databaseReference ->
                             if (databaseError != null) {
                                 Log.w(
-                                    TAG, "Unable to write message to database.",
-                                          databaseError.toException()
-                                      )
-                                      return@CompletionListener
-                                  }
+                                        TAG, "Unable to write message to database.",
+                                        databaseError.toException()
+                                )
+                                return@CompletionListener
+                            }
 
-                                  // Build a StorageReference and then upload the file
-                                  val key = databaseReference.key
-                                  val storageReference = Firebase.storage
-                                      .getReference(user!!.uid)
-                                      .child(key!!)
-                                      .child(uri!!.lastPathSegment!!)
-                                  putImageInStorage(storageReference, uri, key)
-                              })
-            }
-        }
+                            // Build a StorageReference and then upload the file
+                            val key = databaseReference.key
+                            val storageReference = Firebase.storage
+                                    .getReference(user!!.uid)
+                                    .child(key!!)
+                                    .child(uri.lastPathSegment!!)
+                            putImageInStorage(storageReference, uri, key)
+                        })
     }
 
     private fun putImageInStorage(storageReference: StorageReference, uri: Uri, key: String?) {
@@ -242,7 +236,6 @@ class MainActivity : AppCompatActivity() {
         private const val TAG = "MainActivity"
         const val MESSAGES_CHILD = "messages"
         const val ANONYMOUS = "anonymous"
-        private const val REQUEST_IMAGE = 2
         private const val LOADING_IMAGE_URL = "https://www.google.com/images/spin-32.gif"
     }
 }
