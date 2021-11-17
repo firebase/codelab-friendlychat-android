@@ -8,7 +8,7 @@ feedback link: https://github.com/firebase/codelab-friendlychat-android/issues
 
 ---
 
-# Firebase Android Codelab - Build Friendly Chat
+# Firebase Android Codelab - Build Friendly Chat - Clay's version
 
 [Codelab Feedback](https://github.com/firebase/codelab-friendlychat-android/issues)
 
