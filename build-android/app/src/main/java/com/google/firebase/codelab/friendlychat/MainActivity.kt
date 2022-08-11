@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: FriendlyMessageAdapter
 
     private val openDocument = registerForActivityResult(MyOpenDocumentContract()) { uri ->
-        onImageSelected(uri)
+        uri?.let { onImageSelected(it) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var manager: LinearLayoutManager
 
     private val openDocument = registerForActivityResult(MyOpenDocumentContract()) { uri ->
-        onImageSelected(uri)
+        uri?.let { onImageSelected(it) }
     }
 
     // TODO: implement Firebase instance variables
