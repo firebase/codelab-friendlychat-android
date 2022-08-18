@@ -77,10 +77,10 @@ buildscript {
     // ...
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.2'
+        classpath 'com.android.tools.build:gradle:7.2.2'
 
         // The google-services plugin is required to parse the google-services.json file
-        classpath 'com.google.gms:google-services:4.3.5'
+        classpath 'com.google.gms:google-services:4.3.13'
     }
 }
 ```
@@ -102,17 +102,17 @@ dependencies {
     // ...
 
     // Google Sign In SDK
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
     // Firebase SDK
-    implementation platform('com.google.firebase:firebase-bom:26.6.0')
+    implementation platform('com.google.firebase:firebase-bom:30.3.2')
     implementation 'com.google.firebase:firebase-database-ktx'
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
 
     // Firebase UI Library
-    implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
-    implementation 'com.firebaseui:firebase-ui-database:7.2.0'
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.1'
+    implementation 'com.firebaseui:firebase-ui-database:8.0.1'
 }
 ```
 
