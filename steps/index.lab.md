@@ -119,7 +119,7 @@ dependencies {
 ## Install the Firebase CLI
 Duration: 05:00
 
-In this codelab you'll use the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) to locally emulate Firebase Auth, Cloud Firestore and Cloud Storage. This provides a safe, fast, and no-cost local development environment to build your app.
+In this codelab you'll use the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) to locally emulate Firebase Auth, the Realtime Database and Cloud Storage. This provides a safe, fast, and no-cost local development environment to build your app.
 
 ### Install the Firebase CLI
 
