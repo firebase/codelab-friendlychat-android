@@ -34,7 +34,8 @@ Welcome to the Friendly Chat codelab. In this codelab, you'll learn how to use t
 
 * [Android Studio](https://developer.android.com/studio) version 4.2+.
 * An [Android Emulator](https://developer.android.com/studio/run/emulator#install) with Android 5.0+.
-* Java 7 or higher. To install Java use these [instructions](https://java.com/en/download/help/download_options.xml); to check your version, run `java -version`.
+* Node.js version 10 or higher (to use the Emulator Suite).
+* Java 8 or higher. To install Java use these [instructions](https://java.com/en/download/help/download_options.xml); to check your version, run `java -version`.
 * Familiarity with the Kotlin programming language.
 
 ## Get the sample code
