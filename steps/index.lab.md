@@ -119,33 +119,28 @@ dependencies {
 ## Install the Firebase CLI
 Duration: 05:00
 
-In order to run the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite), you
-need to install and use the [Firebase CLI](https://firebase.google.com/docs/cli).
+In this codelab you'll use the [Firebase Emulator Suite](https://firebase.google.com/docs/emulator-suite) to locally emulate Firebase Auth, Cloud Firestore and Cloud Storage. This provides a safe, fast, and no-cost local development environment to build your app.
 
-### Install the CLI
+### Install the Firebase CLI
 
-#### Option 1 - Install with npm
+First you will need to install the [Firebase CLI](https://firebase.google.com/docs/cli). If you are using macOS or Linux, you can run the following cURL command:
 
-If you already have Node.js and npm installed on your machine, you can install the CLI with the
-following command:
-
-```shell
-npm install -g firebase-tools@latest
+```console
+curl -sL https://firebase.tools | bash
 ```
 
-#### Option 2 - Install standalone binary
+If you are using Windows, read the [installation instructions](https://firebase.google.com/docs/cli#install-cli-windows) to get a standalone binary or to install via `npm`.
 
-If you don't have Node.js/npm or you're new to app development, you can install the CLI as a standalone binary following the
-[instructions for your platform here](https://firebase.google.com/docs/cli).
+Once you've installed the CLI, running `firebase --version` should report a version of `9.0.0` or higher:
 
-### Check installation
-
-Once you have the Firebase CLI installed, run the following command to make sure you have
-version `9.11.0` or higher:
-
-```shell
-firebase --version
+```console
+$ firebase --version
+9.0.0
 ```
+
+### Log In
+
+Run `firebase login` to connect the CLI to your Google account. This will open a new browser window to complete the login process. Make sure to choose the same account you used when creating your Firebase project earlier.
 
 ## Connect to the Firebase Emulator Suite
 Duration: 02:00
