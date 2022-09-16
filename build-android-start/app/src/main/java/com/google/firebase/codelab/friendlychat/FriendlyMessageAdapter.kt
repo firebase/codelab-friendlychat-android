@@ -37,8 +37,7 @@ import com.google.firebase.storage.ktx.storage
 class FriendlyMessageAdapter(
     private val options: FirebaseRecyclerOptions<FriendlyMessage>,
     private val currentUserName: String?
-) :
-    FirebaseRecyclerAdapter<FriendlyMessage, ViewHolder>(options) {
+) : FirebaseRecyclerAdapter<FriendlyMessage, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)

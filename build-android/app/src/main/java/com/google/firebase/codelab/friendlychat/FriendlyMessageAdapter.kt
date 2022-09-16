@@ -37,8 +37,7 @@ import com.google.firebase.storage.ktx.storage
 class FriendlyMessageAdapter(
     private val options: FirebaseRecyclerOptions<FriendlyMessage>,
     private val currentUserName: String?
-) :
-    FirebaseRecyclerAdapter<FriendlyMessage, ViewHolder>(options) {
+) : FirebaseRecyclerAdapter<FriendlyMessage, ViewHolder>(options) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -70,9 +69,9 @@ class FriendlyMessageAdapter(
             binding.messageTextView.text = item.text
             setTextColor(item.name, binding.messageTextView)
 
-            binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
+            binding.messengerTextView.text = item.name ?: ANONYMOUS
             if (item.photoUrl != null) {
-                loadImageIntoView(binding.messengerImageView, item.photoUrl!!)
+                loadImageIntoView(binding.messengerImageView, item.photoUrl)
             } else {
                 binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
             }
@@ -94,9 +93,9 @@ class FriendlyMessageAdapter(
         fun bind(item: FriendlyMessage) {
             loadImageIntoView(binding.messageImageView, item.imageUrl!!)
 
-            binding.messengerTextView.text = if (item.name == null) ANONYMOUS else item.name
+            binding.messengerTextView.text = item.name ?: ANONYMOUS
             if (item.photoUrl != null) {
-                loadImageIntoView(binding.messengerImageView, item.photoUrl!!)
+                loadImageIntoView(binding.messengerImageView, item.photoUrl)
             } else {
                 binding.messengerImageView.setImageResource(R.drawable.ic_account_circle_black_36dp)
             }
