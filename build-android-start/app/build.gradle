@@ -41,6 +41,12 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    lintOptions {
+        // TODO(thatfiredev): Remove this once
+        //  https://github.com/bumptech/glide/issues/4940 is fixed
+        disable 'NotificationPermission'
+    }
 }
 
 dependencies {
