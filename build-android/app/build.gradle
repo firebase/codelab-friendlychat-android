@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace "com.google.firebase.codelab.friendlychat"
     compileSdkVersion 33
 
     defaultConfig {
