@@ -23,6 +23,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.codelab.friendlychat.MainActivity.Companion.ANONYMOUS
@@ -91,7 +92,7 @@ class FriendlyMessageAdapter(
     inner class ImageMessageViewHolder(private val binding: ImageMessageBinding) :
         ViewHolder(binding.root) {
         fun bind(item: FriendlyMessage) {
-            loadImageIntoView(binding.messageImageView, item.imageUrl!!)
+            loadImageIntoView(binding.messageImageView, item.imageUrl!!, false)
 
             binding.messengerTextView.text = item.name ?: ANONYMOUS
             if (item.photoUrl != null) {
@@ -102,15 +103,13 @@ class FriendlyMessageAdapter(
         }
     }
 
-    private fun loadImageIntoView(view: ImageView, url: String) {
+    private fun loadImageIntoView(view: ImageView, url: String, isCircular: Boolean = true) {
         if (url.startsWith("gs://")) {
             val storageReference = Firebase.storage.getReferenceFromUrl(url)
             storageReference.downloadUrl
                 .addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
-                    Glide.with(view.context)
-                        .load(downloadUrl)
-                        .into(view)
+                    loadWithGlide(view, downloadUrl, isCircular)
                 }
                 .addOnFailureListener { e ->
                     Log.w(
@@ -120,8 +119,17 @@ class FriendlyMessageAdapter(
                     )
                 }
         } else {
-            Glide.with(view.context).load(url).into(view)
+            loadWithGlide(view, url, isCircular)
         }
+    }
+
+    private fun loadWithGlide(view: ImageView, url: String, isCircular: Boolean = true) {
+        Glide.with(view.context).load(url).into(view)
+        var requestBuilder = Glide.with(view.context).load(url)
+        if (isCircular) {
+            requestBuilder = requestBuilder.transform(CircleCrop())
+        }
+        requestBuilder.into(view)
     }
 
     companion object {
