@@ -5,7 +5,7 @@ plugins {
     id("com.android.library") version "8.2.1" apply false
     id("org.jetbrains.kotlin.android") version "1.9.22" apply false
     id("com.google.gms.google-services") version "4.4.0" apply false
-    id("com.github.ben-manes.versions") version "0.50.0" apply true
+    id("com.github.ben-manes.versions") version "0.51.0" apply true
 }
 
 allprojects {
