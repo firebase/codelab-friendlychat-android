@@ -56,7 +56,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
 
     // Google
-    implementation("com.google.android.gms:play-services-auth:21.1.1")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
