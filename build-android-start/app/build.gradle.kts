@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.google.firebase.codelab.friendlychat"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.google.firebase.codelab.friendlychat"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -59,7 +59,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.3.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
