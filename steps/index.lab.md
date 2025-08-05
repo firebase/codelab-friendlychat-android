@@ -106,9 +106,9 @@ dependencies {
 
     // Firebase SDK
     implementation platform('com.google.firebase:firebase-bom:30.3.2')
-    implementation 'com.google.firebase:firebase-database-ktx'
-    implementation 'com.google.firebase:firebase-storage-ktx'
-    implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-storage'
+    implementation 'com.google.firebase:firebase-auth'
 
     // Firebase UI Library
     implementation 'com.firebaseui:firebase-ui-auth:8.0.1'
