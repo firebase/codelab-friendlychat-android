@@ -26,9 +26,9 @@ import com.firebase.ui.auth.FirebaseAuthUIActivityResultContract
 import com.firebase.ui.auth.IdpResponse
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.auth
 import com.google.firebase.codelab.friendlychat.databinding.ActivitySignInBinding
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
 
 
 class SignInActivity : AppCompatActivity() {

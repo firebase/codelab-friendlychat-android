@@ -30,8 +30,8 @@ import com.google.firebase.codelab.friendlychat.MainActivity.Companion.ANONYMOUS
 import com.google.firebase.codelab.friendlychat.databinding.ImageMessageBinding
 import com.google.firebase.codelab.friendlychat.databinding.MessageBinding
 import com.google.firebase.codelab.friendlychat.model.FriendlyMessage
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.Firebase
+import com.google.firebase.storage.storage
 
 // The FirebaseRecyclerAdapter class and options come from the FirebaseUI library
 // See: https://github.com/firebase/FirebaseUI-Android
