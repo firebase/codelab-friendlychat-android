@@ -48,7 +48,7 @@ android {
 }
 
 dependencies {
-    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.google.android.material:material:1.13.0")
     implementation("com.github.bumptech.glide:glide:5.0.4")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
