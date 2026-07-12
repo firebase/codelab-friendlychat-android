@@ -53,7 +53,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.14.0")
-    implementation("com.github.bumptech.glide:glide:5.0.7")
+    implementation("com.github.bumptech.glide:glide:5.0.9")
     implementation("androidx.appcompat:appcompat:1.7.1")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.media:media:1.8.0")
@@ -63,7 +63,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.6.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:34.15.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.16.0"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
