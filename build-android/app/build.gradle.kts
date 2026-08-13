@@ -54,7 +54,7 @@ android {
 dependencies {
     implementation("com.google.android.material:material:1.14.0")
     implementation("com.github.bumptech.glide:glide:5.0.9")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.media:media:1.8.0")
     implementation("androidx.core:core-ktx:1.19.0")
