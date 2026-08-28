@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.google.firebase.codelab.friendlychat"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -60,7 +60,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.19.0")
 
     // Google
-    implementation("com.google.android.gms:play-services-auth:21.6.0")
+    implementation("com.google.android.gms:play-services-auth:22.0.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:34.18.0"))
