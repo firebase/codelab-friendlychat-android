@@ -57,7 +57,7 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.media:media:1.8.0")
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.19.1")
 
     // Google
     implementation("com.google.android.gms:play-services-auth:22.0.0")
