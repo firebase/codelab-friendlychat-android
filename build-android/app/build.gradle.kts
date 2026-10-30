@@ -63,14 +63,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:22.0.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:35.0.2"))
+    implementation(platform("com.google.firebase:firebase-bom:35.1.0"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
 
     // Firebase UI
-    implementation("com.firebaseui:firebase-ui-auth:9.1.1")
-    implementation("com.firebaseui:firebase-ui-database:9.1.1")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0")
+    implementation("com.firebaseui:firebase-ui-database:10.0.0")
 
     // Testing dependencies
     testImplementation("junit:junit:4.13.2")
