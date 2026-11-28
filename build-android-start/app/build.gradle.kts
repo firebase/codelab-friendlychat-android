@@ -7,7 +7,11 @@ plugins {
 
 android {
     namespace = "com.google.firebase.codelab.friendlychat"
-    compileSdk = 37
+    compileSdk {
+        version = release(37) {
+            minorApiLevel = 1
+        }
+    }
 
     defaultConfig {
         applicationId = "com.google.firebase.codelab.friendlychat"
@@ -53,7 +57,7 @@ android {
 
 dependencies {
     implementation("com.google.android.material:material:1.14.0")
-    implementation("com.github.bumptech.glide:glide:5.0.9")
+    implementation("com.github.bumptech.glide:glide:5.0.10")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.media:media:1.8.0")
@@ -63,14 +67,14 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:22.0.0")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:35.0.2"))
+    implementation(platform("com.google.firebase:firebase-bom:35.2.0"))
     implementation("com.google.firebase:firebase-database")
     implementation("com.google.firebase:firebase-storage")
     implementation("com.google.firebase:firebase-auth")
 
     // Firebase UI
-    implementation("com.firebaseui:firebase-ui-auth:9.1.1")
-    implementation("com.firebaseui:firebase-ui-database:9.1.1")
+    implementation("com.firebaseui:firebase-ui-auth:10.0.0")
+    implementation("com.firebaseui:firebase-ui-database:10.0.0")
 
     // Testing dependencies
     testImplementation("junit:junit:4.13.2")
